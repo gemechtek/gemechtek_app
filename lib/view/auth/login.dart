@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:gemechtek_app/backend/providers/auth_provider.dart';
 import 'package:gemechtek_app/navigation/main_navigation.dart';
 import 'package:gemechtek_app/view/auth/signup.dart';
+import 'package:gemechtek_app/widgets/error_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:pinput/pinput.dart';
 
@@ -57,27 +58,38 @@ class _LoginScreenState extends State<LoginScreen> {
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 40),
-                if (authProvider.error != null)
-                  Container(
-                    padding: const EdgeInsets.all(10),
-                    color: Colors.red.shade100,
-                    child: Text(
-                      authProvider.error!,
-                      style: TextStyle(color: Colors.red.shade800),
-                    ),
+                if (authProvider.error != null) ...[
+                  ErrorDisplay(
+                    errorMessage: authProvider.error!,
+                    onRetry: () =>
+                        setState(() => authProvider.setErrorMessage(null)),
                   ),
+                  SizedBox(height: 16),
+                ],
                 if (!_otpSent) ...[
-                  TextField(
+                  TextFormField(
+                    autofillHints: const [AutofillHints.telephoneNumber],
                     controller: _phoneController,
                     keyboardType: TextInputType.phone,
                     decoration: const InputDecoration(
                       labelText: 'Mobile Number',
                       hintText: 'e.g., 9876543210',
-                      prefixText: '+91 ',
                       border: OutlineInputBorder(),
                       prefixIcon: Icon(Icons.phone),
                     ),
-                    maxLength: 10, // Indian mobile numbers are 10 digits
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your mobile number';
+                      }
+                      if (value.length < 10) {
+                        return 'Mobile number must be 10 digits';
+                      }
+                      if (!RegExp(r'^\+?[0-9]{10,13}$').hasMatch(value)) {
+                        return 'Please enter a valid mobile number';
+                      }
+
+                      return null;
+                    },
                   ),
                   const SizedBox(height: 24),
                   ElevatedButton(
@@ -146,7 +158,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final phoneNumber = _phoneController.text.trim();
 
     // Validate inputs
-    if (phoneNumber.isEmpty || phoneNumber.length != 10) {
+    if (phoneNumber.isEmpty || phoneNumber.length < 10) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
             content: Text('Please enter a valid 10-digit mobile number')),
@@ -155,7 +167,10 @@ class _LoginScreenState extends State<LoginScreen> {
     }
 
     // Prepend Indian country code
-    final fullPhoneNumber = '$_countryCode$phoneNumber';
+    // final fullPhoneNumber = '$_countryCode$phoneNumber';
+
+    final fullPhoneNumber =
+        phoneNumber.contains("+91") ? phoneNumber : _countryCode + phoneNumber;
     final success = await authProvider.sendOTP(
       fullPhoneNumber,
       isLogin: true,
@@ -175,10 +190,12 @@ class _LoginScreenState extends State<LoginScreen> {
       );
       return;
     }
-
+    final phoneNumber = _phoneController.text.trim();
+    final fullPhoneNumber =
+        phoneNumber.contains("+91") ? phoneNumber : _countryCode + phoneNumber;
     await authProvider.verifyOTPAndLogin(
       _otpController.text.trim(),
-      '$_countryCode${_phoneController.text.trim()}', // Pass full number
+      fullPhoneNumber,
     );
   }
 }

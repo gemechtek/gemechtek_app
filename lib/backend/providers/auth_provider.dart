@@ -19,13 +19,13 @@ class AuthProvider extends ChangeNotifier {
   String? get verificationId => _verificationId; // Added getter for UI access
 
   AuthProvider() {
-    _authService.currentUser.listen((user) {
-      _currentUser = user;
-      notifyListeners();
-      if (user != null) {
-        _updateFcmToken();
-      }
-    });
+    // _authService.currentUser.listen((user) {
+    //   _currentUser = user;
+    //   notifyListeners();
+    //   if (user != null) {
+    //     _updateFcmToken();
+    //   }
+    // });
   }
 
   // Send OTP (with login or registration context)
@@ -175,6 +175,11 @@ class AuthProvider extends ChangeNotifier {
 
   void _setLoading(bool value) {
     _isLoading = value;
+    notifyListeners();
+  }
+
+  void setErrorMessage(String? message) {
+    _error = message;
     notifyListeners();
   }
 }
