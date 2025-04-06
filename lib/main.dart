@@ -37,10 +37,10 @@ void main() async {
     provisional: false,
     sound: true,
   );
-  await FirebaseAppCheck.instance.activate(
-    // androidProvider: AndroidProvider.playIntegrity,
-    androidProvider: AndroidProvider.debug,
-  );
+  // await FirebaseAppCheck.instance.activate(
+  //   // androidProvider: AndroidProvider.playIntegrity,
+  //   androidProvider: AndroidProvider.debug,
+  // );
   runApp(const MyApp());
 }
 
