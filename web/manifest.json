@@ -1,6 +1,6 @@
 {
-    "name": "gemechtek_app",
-    "short_name": "gemechtek_app",
+    "name": "spark_aquanix",
+    "short_name": "spark_aquanix",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

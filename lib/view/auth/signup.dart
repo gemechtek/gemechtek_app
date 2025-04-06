@@ -1,8 +1,8 @@
 // lib/screens/signup_screen.dart
 import 'package:flutter/material.dart';
-import 'package:gemechtek_app/backend/providers/auth_provider.dart';
-import 'package:gemechtek_app/navigation/main_navigation.dart';
-import 'package:gemechtek_app/widgets/error_widget.dart';
+import 'package:spark_aquanix/backend/providers/auth_provider.dart';
+import 'package:spark_aquanix/navigation/main_navigation.dart';
+import 'package:spark_aquanix/widgets/error_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:pinput/pinput.dart';
 

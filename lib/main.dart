@@ -1,12 +1,13 @@
+import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:gemechtek_app/app/providers.dart';
-import 'package:gemechtek_app/backend/providers/auth_provider.dart';
-import 'package:gemechtek_app/firebase_options.dart';
-import 'package:gemechtek_app/navigation/main_navigation.dart';
-import 'package:gemechtek_app/view/auth/login.dart';
+import 'package:spark_aquanix/app/providers.dart';
+import 'package:spark_aquanix/backend/providers/auth_provider.dart';
+import 'package:spark_aquanix/firebase_options.dart';
+import 'package:spark_aquanix/navigation/main_navigation.dart';
+import 'package:spark_aquanix/view/auth/login.dart';
 import 'package:provider/provider.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -36,6 +37,10 @@ void main() async {
     provisional: false,
     sound: true,
   );
+  await FirebaseAppCheck.instance.activate(
+    // androidProvider: AndroidProvider.playIntegrity,
+    androidProvider: AndroidProvider.debug,
+  );
   runApp(const MyApp());
 }
 
@@ -47,7 +52,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: AppProviders.providers,
       child: MaterialApp(
-        title: 'Gemechtek',
+        title: 'Spark Aquanix',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),

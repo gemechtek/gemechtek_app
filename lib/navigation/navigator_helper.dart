@@ -1,8 +1,8 @@
 // File: lib/navigation/navigation_helper.dart
 import 'package:flutter/material.dart';
-import 'package:gemechtek_app/view/cart/cart_screen.dart';
-import 'package:gemechtek_app/view/checkout/checkout_screen.dart';
-import 'package:gemechtek_app/view/products/product_details.dart';
+import 'package:spark_aquanix/view/cart/cart_screen.dart';
+import 'package:spark_aquanix/view/checkout/checkout_screen.dart';
+import 'package:spark_aquanix/view/products/product_details.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
 
 class NavigationHelper {

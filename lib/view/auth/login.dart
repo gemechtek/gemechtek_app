@@ -1,9 +1,9 @@
 // lib/screens/login_screen.dart
 import 'package:flutter/material.dart';
-import 'package:gemechtek_app/backend/providers/auth_provider.dart';
-import 'package:gemechtek_app/navigation/main_navigation.dart';
-import 'package:gemechtek_app/view/auth/signup.dart';
-import 'package:gemechtek_app/widgets/error_widget.dart';
+import 'package:spark_aquanix/backend/providers/auth_provider.dart';
+import 'package:spark_aquanix/navigation/main_navigation.dart';
+import 'package:spark_aquanix/view/auth/signup.dart';
+import 'package:spark_aquanix/widgets/error_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:pinput/pinput.dart';
 
@@ -193,9 +193,14 @@ class _LoginScreenState extends State<LoginScreen> {
     final phoneNumber = _phoneController.text.trim();
     final fullPhoneNumber =
         phoneNumber.contains("+91") ? phoneNumber : _countryCode + phoneNumber;
-    await authProvider.verifyOTPAndLogin(
+    bool islogin = await authProvider.verifyOTPAndLogin(
       _otpController.text.trim(),
       fullPhoneNumber,
     );
+    if (islogin) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Login successful')),
+      );
+    }
   }
 }

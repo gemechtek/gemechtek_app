@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gemechtek_app/navigation/navigator_helper.dart';
+import 'package:spark_aquanix/navigation/navigator_helper.dart';
 
 class ProductDetailsScreen extends StatelessWidget {
   final String productId;

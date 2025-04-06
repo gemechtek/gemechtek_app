@@ -1,4 +1,4 @@
-# gemechtek_app
+# spark_aquanix
 
 A new Flutter project.
 

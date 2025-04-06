@@ -60,9 +60,10 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyCqLtYMkgRZ-nMXx30-yp4aB91iExcXMik',
-    appId: '1:542645939884:android:2fbd9afeedb350690bb909',
+    appId: '1:542645939884:android:495129d1f7633cb70bb909',
     messagingSenderId: '542645939884',
     projectId: 'gemechtek-19a37',
     storageBucket: 'gemechtek-19a37.firebasestorage.app',
   );
+
 }

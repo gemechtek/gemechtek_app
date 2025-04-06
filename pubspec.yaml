@@ -1,4 +1,4 @@
-name: gemechtek_app
+name: spark_aquanix
 description: "A new Flutter project."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -49,6 +49,7 @@ dependencies:
   persistent_bottom_nav_bar_v2: ^5.3.1
   flutter_svg: ^2.0.17
   cloud_firestore: ^5.6.6
+  firebase_app_check: ^0.3.2+5
 
 
 
@@ -62,6 +63,8 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^5.0.0
+  change_app_package_name: ^1.5.0
+  rename_app: ^1.6.2
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
