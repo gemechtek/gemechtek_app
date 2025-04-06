@@ -1,8 +1,8 @@
-import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:spark_aquanix/app/app_theme.dart';
 import 'package:spark_aquanix/app/providers.dart';
 import 'package:spark_aquanix/backend/providers/auth_provider.dart';
 import 'package:spark_aquanix/firebase_options.dart';
@@ -54,11 +54,8 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Spark Aquanix',
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          useMaterial3: true,
-        ),
-        home: LoginScreen(),
+        theme: AppTheme.theme,
+        home: AuthWrapper(),
       ),
     );
   }

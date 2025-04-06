@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:spark_aquanix/backend/services/auth_service.dart';
+import 'package:spark_aquanix/constants/error_formatter.dart';
 import '../model/user_model.dart';
 
 class AuthProvider extends ChangeNotifier {
@@ -19,13 +20,13 @@ class AuthProvider extends ChangeNotifier {
   String? get verificationId => _verificationId; // Added getter for UI access
 
   AuthProvider() {
-    // _authService.currentUser.listen((user) {
-    //   _currentUser = user;
-    //   notifyListeners();
-    //   if (user != null) {
-    //     _updateFcmToken();
-    //   }
-    // });
+    _authService.currentUser.listen((user) {
+      _currentUser = user;
+      notifyListeners();
+      if (user != null) {
+        _updateFcmToken();
+      }
+    });
   }
 
   // Send OTP (with login or registration context)
@@ -40,7 +41,7 @@ class AuthProvider extends ChangeNotifier {
       return true;
     } catch (e) {
       _setLoading(false);
-      _error = e.toString();
+      _error = ErrorFormatter.formatAuthError(e);
       notifyListeners();
       return false;
     }
@@ -71,7 +72,7 @@ class AuthProvider extends ChangeNotifier {
       return true;
     } catch (e) {
       _setLoading(false);
-      _error = e.toString();
+      _error = ErrorFormatter.formatAuthError(e);
       notifyListeners();
       return false;
     }
@@ -107,7 +108,7 @@ class AuthProvider extends ChangeNotifier {
       return true;
     } catch (e) {
       _setLoading(false);
-      _error = e.toString();
+      _error = ErrorFormatter.formatAuthError(e);
       notifyListeners();
       return false;
     }
@@ -133,7 +134,7 @@ class AuthProvider extends ChangeNotifier {
       return true;
     } catch (e) {
       _setLoading(false);
-      _error = e.toString();
+      _error = ErrorFormatter.formatAuthError(e);
       return false;
     }
   }
@@ -152,7 +153,7 @@ class AuthProvider extends ChangeNotifier {
     try {
       return await FirebaseMessaging.instance.getToken() ?? '';
     } catch (e) {
-      print('Error getting FCM token: ${e.toString()}');
+      print('Error getting FCM token: ${ErrorFormatter.formatAuthError(e)}');
       return '';
     }
   }

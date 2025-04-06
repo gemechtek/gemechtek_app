@@ -8,13 +8,13 @@ class FirebaseAuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-//  Stream<UserModel?> get currentUser =>
-//       _auth.authStateChanges().asyncMap((User? user) async {
-//         if (user != null) {
-//           return await getUserData(user.uid);
-//         }
-//         return null;
-//       });
+  Stream<UserModel?> get currentUser =>
+      _auth.authStateChanges().asyncMap((User? user) async {
+        if (user != null) {
+          return await getUserData(user.uid);
+        }
+        return null;
+      });
 
   // Check if phone number exists in Firestore
   Future<bool> doesPhoneNumberExist(String phoneNumber) async {
