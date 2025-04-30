@@ -232,8 +232,12 @@ class _LoginScreenState extends State<LoginScreen> {
       isLogin: true,
     );
     if (success) {
-      setState(() {
-        _otpSent = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          setState(() {
+            _otpSent = true;
+          });
+        }
       });
     }
   }

@@ -17,11 +17,14 @@ class AuthProvider extends ChangeNotifier {
   bool get isLoading => _isLoading;
   bool get isAuthenticated => _currentUser != null;
   String? get error => _error;
-  String? get verificationId => _verificationId; // Added getter for UI access
+  String? get verificationId => _verificationId;
 
   AuthProvider() {
+    _isLoading = true;
+    notifyListeners();
     _authService.currentUser.listen((user) {
       _currentUser = user;
+      _isLoading = false;
       notifyListeners();
       if (user != null) {
         _updateFcmToken();

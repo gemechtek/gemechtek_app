@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 class AppTheme {
-  // Main colors from the image
   static const Color primaryBlue = Color(0xFF0089FF);
   static const Color textDark = Color(0xFF232323);
   static const Color backgroundColor = Color(0xFFFFFFFF);
@@ -9,12 +8,10 @@ class AppTheme {
   static const Color mediumGray = Color(0xFFE0E0E0);
   static const Color starColor = Color(0xFFDDDDDD);
 
-  // Additional complementary colors
   static const Color primaryDark = Color(0xFF0066CC);
   static const Color primaryLight = Color(0xFF66B8FF);
   static const Color secondaryText = Color(0xFF666666);
 
-  // Text style with DM Sans font
   static const String fontFamily = 'DM Sans';
 
   // Theme data

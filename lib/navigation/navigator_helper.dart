@@ -4,6 +4,7 @@ import 'package:spark_aquanix/view/cart/cart_screen.dart';
 import 'package:spark_aquanix/view/checkout/checkout_screen.dart';
 import 'package:spark_aquanix/view/products/product_details.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
+import 'package:spark_aquanix/view/profile/screens/edit_profile.dart';
 
 class NavigationHelper {
   static void navigateToProductDetails(BuildContext context, String productId) {
@@ -33,6 +34,14 @@ class NavigationHelper {
     );
   }
 
+  static void navigateToEditProfile(BuildContext context) {
+    pushScreen(
+      context,
+      screen: EditProfileScreen(),
+      withNavBar: false,
+      pageTransitionAnimation: PageTransitionAnimation.cupertino,
+    );
+  }
   // static void navigateToOrderSummary(BuildContext context, String orderId) {
   //   pushScreen(
   //     context,
