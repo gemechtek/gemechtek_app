@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:spark_aquanix/backend/providers/auth_provider.dart';
 import 'package:spark_aquanix/navigation/navigator_helper.dart';
+import 'package:spark_aquanix/view/auth/login.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -135,12 +136,14 @@ class ProfileScreen extends StatelessWidget {
                 if (shouldLogout == true) {
                   await authProvider.signOut();
                   if (context.mounted) {
-                    // Navigate to login screen and clear the stack
-                    Navigator.pushNamedAndRemoveUntil(
-                      context,
-                      '/login', // Replace with your login route
-                      (route) => false,
-                    );
+                    // Navigator.pushAndRemoveUntil(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //     builder: (context) => const LoginScreen(),
+                    //   ),
+                    //   (route) => false,
+                    // );
+                    NavigationHelper.navigateToLogin(context);
                   }
                 }
               },

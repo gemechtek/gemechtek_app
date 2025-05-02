@@ -1,5 +1,6 @@
 // File: lib/navigation/navigation_helper.dart
 import 'package:flutter/material.dart';
+import 'package:spark_aquanix/view/auth/login.dart';
 import 'package:spark_aquanix/view/cart/cart_screen.dart';
 import 'package:spark_aquanix/view/checkout/checkout_screen.dart';
 import 'package:spark_aquanix/view/products/product_details.dart';
@@ -40,6 +41,13 @@ class NavigationHelper {
       screen: EditProfileScreen(),
       withNavBar: false,
       pageTransitionAnimation: PageTransitionAnimation.cupertino,
+    );
+  }
+
+  static void navigateToLogin(BuildContext context) {
+    pushReplacementWithoutNavBar(
+      context,
+      MaterialPageRoute(builder: (_) => LoginScreen()),
     );
   }
   // static void navigateToOrderSummary(BuildContext context, String orderId) {
