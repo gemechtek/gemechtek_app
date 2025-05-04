@@ -2,7 +2,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:spark_aquanix/backend/services/auth_service.dart';
+import 'package:spark_aquanix/backend/firebase_services/auth_service.dart';
 import 'package:spark_aquanix/constants/error_formatter.dart';
 import '../model/user_model.dart';
 

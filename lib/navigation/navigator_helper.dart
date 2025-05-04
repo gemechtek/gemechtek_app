@@ -3,15 +3,25 @@ import 'package:flutter/material.dart';
 import 'package:spark_aquanix/view/auth/login.dart';
 import 'package:spark_aquanix/view/cart/cart_screen.dart';
 import 'package:spark_aquanix/view/checkout/checkout_screen.dart';
+import 'package:spark_aquanix/view/home/home_screen.dart';
 import 'package:spark_aquanix/view/products/product_details.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
 import 'package:spark_aquanix/view/profile/screens/edit_profile.dart';
 
 class NavigationHelper {
+  static void navigateToHome(BuildContext context) {
+    pushScreen(
+      context,
+      screen: HomeScreen(),
+      withNavBar: true,
+      pageTransitionAnimation: PageTransitionAnimation.cupertino,
+    );
+  }
+
   static void navigateToProductDetails(BuildContext context, String productId) {
     pushScreen(
       context,
-      screen: ProductDetailsScreen(productId: productId),
+      screen: ProductDetailScreen(productId: productId),
       withNavBar: true,
       pageTransitionAnimation: PageTransitionAnimation.cupertino,
     );

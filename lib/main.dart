@@ -9,7 +9,7 @@ import 'package:spark_aquanix/firebase_options.dart';
 import 'package:spark_aquanix/navigation/main_navigation.dart';
 import 'package:spark_aquanix/view/auth/login.dart';
 import 'package:provider/provider.dart';
-import 'backend/services/local_pref.dart';
+import 'backend/firebase_services/local_pref.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // Handle background messages
