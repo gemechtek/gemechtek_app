@@ -10,11 +10,9 @@ class ProductService {
         _categoriesCollection =
             FirebaseFirestore.instance.collection('categories');
 
+  // Get all products (Active and Out Of Stock)
   Stream<List<UserProduct>> getProducts() {
-    return _productsCollection
-        .where('status', isEqualTo: 'Active')
-        .snapshots()
-        .map((snapshot) {
+    return _productsCollection.snapshots().map((snapshot) {
       return snapshot.docs.map((doc) {
         return UserProduct.fromFirestore(
             doc.data() as Map<String, dynamic>, doc.id);
@@ -22,9 +20,9 @@ class ProductService {
     });
   }
 
+  // Get products by category (Active and Out Of Stock)
   Stream<List<UserProduct>> getProductsByCategory(String category) {
     return _productsCollection
-        .where('status', isEqualTo: 'Active')
         .where('category', isEqualTo: category)
         .snapshots()
         .map((snapshot) {
@@ -35,6 +33,7 @@ class ProductService {
     });
   }
 
+  // Get a specific product by ID
   Future<UserProduct?> getProductById(String productId) async {
     DocumentSnapshot doc = await _productsCollection.doc(productId).get();
     if (doc.exists) {
@@ -44,6 +43,7 @@ class ProductService {
     return null;
   }
 
+  // Get all categories
   Stream<List<String>> getCategories() {
     return _categoriesCollection.snapshots().map((snapshot) {
       return snapshot.docs.map((doc) {
@@ -52,11 +52,9 @@ class ProductService {
     });
   }
 
+  // Search products (Active and Out Of Stock)
   Stream<List<UserProduct>> searchProducts(String query) {
-    return _productsCollection
-        .where('status', isEqualTo: 'Active')
-        .snapshots()
-        .map((snapshot) {
+    return _productsCollection.snapshots().map((snapshot) {
       return snapshot.docs
           .map((doc) {
             return UserProduct.fromFirestore(
@@ -68,9 +66,9 @@ class ProductService {
     });
   }
 
+  // Get featured products (Active and Out Of Stock)
   Stream<List<UserProduct>> getFeaturedProducts() {
     return _productsCollection
-        .where('status', isEqualTo: 'Active')
         .orderBy('itemSold', descending: true)
         .limit(10)
         .snapshots()
@@ -82,9 +80,9 @@ class ProductService {
     });
   }
 
+  // Get discounted products (Active and Out Of Stock)
   Stream<List<UserProduct>> getDiscountedProducts() {
     return _productsCollection
-        .where('status', isEqualTo: 'Active')
         .where('discountPercentage', isGreaterThan: 0)
         .snapshots()
         .map((snapshot) {

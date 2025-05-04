@@ -79,7 +79,7 @@ class ProductCard extends StatelessWidget {
                   child: AspectRatio(
                     aspectRatio: 1,
                     child: Image.network(
-                      product.images[0],
+                      product.images.isNotEmpty ? product.images[0] : "",
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) {
                         // Fallback image when loading fails

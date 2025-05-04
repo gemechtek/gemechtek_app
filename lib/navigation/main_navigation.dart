@@ -6,8 +6,30 @@ import 'package:spark_aquanix/view/orders/orders_screen.dart';
 import 'package:spark_aquanix/view/profile/profile_screen.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
 
-class MainNavigationScreen extends StatelessWidget {
+class MainNavigationScreen extends StatefulWidget {
   const MainNavigationScreen({super.key});
+
+  // Static controller to be accessed globally
+  static PersistentTabController? controller;
+
+  @override
+  _MainNavigationScreenState createState() => _MainNavigationScreenState();
+}
+
+class _MainNavigationScreenState extends State<MainNavigationScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // Initialize the static controller
+    MainNavigationScreen.controller = PersistentTabController(initialIndex: 0);
+  }
+
+  @override
+  void dispose() {
+    // Dispose the controller
+    MainNavigationScreen.controller?.dispose();
+    super.dispose();
+  }
 
   Widget _activeIcon(String assetPath) {
     return SvgPicture.asset(
@@ -36,6 +58,7 @@ class MainNavigationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PersistentTabView(
+      controller: MainNavigationScreen.controller,
       tabs: [
         PersistentTabConfig(
           screen: const HomeScreen(),

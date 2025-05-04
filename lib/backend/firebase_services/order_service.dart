@@ -10,24 +10,47 @@ class OrderService {
       : _ordersCollection = FirebaseFirestore.instance.collection('orders'),
         _productsCollection = FirebaseFirestore.instance.collection('products');
 
-  // Place a new order
+  // Place a new order with stock availability check
   Future<String> placeOrder(OrderDetails order) async {
     try {
-      // Create the order in Firestore
-      DocumentReference orderRef = await _ordersCollection.add(order.toMap());
-
-      // Update product stock and itemSold in a transaction
+      // Run a transaction to check stock and place order
+      DocumentReference? orderRef;
       await FirebaseFirestore.instance.runTransaction((transaction) async {
-        // Step 1: Collect all read operations
+        // Step 1: Collect all read operations for stock check
         final productSnapshots = <String, DocumentSnapshot>{};
+        final outOfStockItems = <String>[];
+
         for (var item in order.items) {
           DocumentReference productRef =
               _productsCollection.doc(item.productId);
           DocumentSnapshot productSnapshot = await transaction.get(productRef);
           productSnapshots[item.productId] = productSnapshot;
+
+          if (productSnapshot.exists) {
+            Map<String, dynamic> productData =
+                productSnapshot.data() as Map<String, dynamic>;
+            int currentStock = productData['stock'] ?? 0;
+
+            // Check if stock is sufficient
+            if (currentStock < item.quantity) {
+              outOfStockItems.add(item.productName);
+            }
+          } else {
+            outOfStockItems.add(item.productName); // Product doesn't exist
+          }
         }
 
-        // Step 2: Perform all write operations
+        // Step 2: If any items are out of stock, throw an exception
+        if (outOfStockItems.isNotEmpty) {
+          throw Exception(
+              'The following items are out of stock: ${outOfStockItems.join(', ')}');
+        }
+
+        // Step 3: Create the order in Firestore (within transaction)
+        orderRef = _ordersCollection.doc();
+        transaction.set(orderRef!, order.toMap());
+
+        // Step 4: Perform all write operations to update stock
         for (var item in order.items) {
           DocumentReference productRef =
               _productsCollection.doc(item.productId);
@@ -58,7 +81,7 @@ class OrderService {
         }
       });
 
-      return orderRef.id;
+      return orderRef!.id;
     } catch (e) {
       throw Exception('Failed to place order: $e');
     }

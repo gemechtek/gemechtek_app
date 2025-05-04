@@ -1,21 +1,29 @@
-// File: lib/navigation/navigation_helper.dart
 import 'package:flutter/material.dart';
 import 'package:spark_aquanix/view/auth/login.dart';
-import 'package:spark_aquanix/view/cart/cart_screen.dart';
 import 'package:spark_aquanix/view/checkout/checkout_screen.dart';
-import 'package:spark_aquanix/view/home/home_screen.dart';
 import 'package:spark_aquanix/view/products/product_details.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
 import 'package:spark_aquanix/view/profile/screens/edit_profile.dart';
 
+import 'main_navigation.dart';
+
 class NavigationHelper {
+  // Helper method to switch to a specific tab
+  static void _switchToTab(int tabIndex) {
+    final controller = MainNavigationScreen.controller;
+    if (controller != null) {
+      controller.jumpToTab(tabIndex);
+    }
+  }
+
   static void navigateToHome(BuildContext context) {
-    pushScreen(
-      context,
-      screen: HomeScreen(),
-      withNavBar: true,
-      pageTransitionAnimation: PageTransitionAnimation.cupertino,
-    );
+    _switchToTab(0);
+    // pushScreen(
+    //   context,
+    //   screen: const HomeScreen(),
+    //   withNavBar: true,
+    //   pageTransitionAnimation: PageTransitionAnimation.cupertino,
+    // );
   }
 
   static void navigateToProductDetails(BuildContext context, String productId) {
@@ -30,25 +38,26 @@ class NavigationHelper {
   static void navigateToCheckout(BuildContext context) {
     pushScreen(
       context,
-      screen: CheckoutScreen(),
+      screen: const CheckoutScreen(),
       withNavBar: false,
       pageTransitionAnimation: PageTransitionAnimation.cupertino,
     );
   }
 
   static void navigateToCart(BuildContext context) {
-    pushScreen(
-      context,
-      screen: CartScreen(),
-      withNavBar: false,
-      pageTransitionAnimation: PageTransitionAnimation.cupertino,
-    );
+    _switchToTab(2);
+    // pushScreen(
+    //   context,
+    //   screen: const CartScreen(),
+    //   withNavBar: true,
+    //   pageTransitionAnimation: PageTransitionAnimation.cupertino,
+    // );
   }
 
   static void navigateToEditProfile(BuildContext context) {
     pushScreen(
       context,
-      screen: EditProfileScreen(),
+      screen: const EditProfileScreen(),
       withNavBar: false,
       pageTransitionAnimation: PageTransitionAnimation.cupertino,
     );
@@ -57,51 +66,7 @@ class NavigationHelper {
   static void navigateToLogin(BuildContext context) {
     pushReplacementWithoutNavBar(
       context,
-      MaterialPageRoute(builder: (_) => LoginScreen()),
+      MaterialPageRoute(builder: (_) => const LoginScreen()),
     );
   }
-  // static void navigateToOrderSummary(BuildContext context, String orderId) {
-  //   pushScreen(
-  //     context,
-  //     screen: OrderSummaryScreen(orderId: orderId),
-  //     withNavBar: false, // Hide nav bar
-  //     pageTransitionAnimation: PageTransitionAnimation.cupertino,
-  //   );
-  // }
-
-  // static void navigateToSettings(BuildContext context) {
-  //   pushScreen(
-  //     context,
-  //     screen: SettingsScreen(),
-  //     withNavBar: false, // Hide nav bar
-  //     pageTransitionAnimation: PageTransitionAnimation.cupertino,
-  //   );
-  // }
-
-  // static void navigateToLogin(BuildContext context) {
-  //   pushScreen(
-  //     context,
-  //     screen: LoginScreen(),
-  //     withNavBar: false, // Hide nav bar
-  //     pageTransitionAnimation: PageTransitionAnimation.cupertino,
-  //   );
-  // }
-
-  // static void navigateToOnboarding(BuildContext context) {
-  //   pushScreen(
-  //     context,
-  //     screen: OnboardingScreen(),
-  //     withNavBar: false, // Hide nav bar
-  //     pageTransitionAnimation: PageTransitionAnimation.cupertino,
-  //   );
-  // }
-
-  // static void navigateToOnboarding(BuildContext context) {
-  //   pushScreen(
-  //     context,
-  //     screen: OnboardingScreen(),
-  //     withNavBar: false, // Hide nav bar
-  //     pageTransitionAnimation: PageTransitionAnimation.cupertino,
-  //   );
-  // }
 }

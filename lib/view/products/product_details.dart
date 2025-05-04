@@ -133,7 +133,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       Row(
                         children: [
                           Text(
-                            '\$${product.finalPrice.toStringAsFixed(2)}',
+                            '₹${product.finalPrice.toStringAsFixed(2)}',
                             style: const TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
@@ -143,7 +143,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                           if (product.discountPercentage > 0) ...[
                             const SizedBox(width: 8),
                             Text(
-                              '\$${product.basePrice.toStringAsFixed(2)}',
+                              '₹${product.basePrice.toStringAsFixed(2)}',
                               style: const TextStyle(
                                 fontSize: 16,
                                 decoration: TextDecoration.lineThrough,
@@ -153,15 +153,15 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                             const SizedBox(width: 8),
                             Container(
                               padding: const EdgeInsets.symmetric(
-                                horizontal: 8,
-                                vertical: 2,
-                              ),
+                                  horizontal: 8, vertical: 2),
                               decoration: BoxDecoration(
                                 color: Colors.red,
                                 borderRadius: BorderRadius.circular(4),
                               ),
                               child: Text(
-                                '${product.discountPercentage.toStringAsFixed(0)}% OFF',
+                                product.discountType == 'Percentage'
+                                    ? '${product.discountPercentage.toStringAsFixed(0)}% OFF'
+                                    : '₹${product.discountPercentage.toStringAsFixed(0)} OFF',
                                 style: const TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
