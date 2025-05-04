@@ -329,14 +329,14 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                     listen: false,
                                   );
                                   cartProvider.addItem(
-                                    productId: product.id,
-                                    productName: product.name,
-                                    price: product.finalPrice,
-                                    quantity: _quantity,
-                                    image: product.images[0],
-                                    selectedColor: _selectedColor,
-                                    size: product.size,
-                                  );
+                                      productId: product.id,
+                                      productName: product.name,
+                                      price: product.finalPrice,
+                                      quantity: _quantity,
+                                      image: product.images[0],
+                                      selectedColor: _selectedColor,
+                                      size: product.size,
+                                      paymentTypes: product.paymentTypes);
                                   // cartProvider.addItem(
                                   //   product,
                                   //   _quantity,

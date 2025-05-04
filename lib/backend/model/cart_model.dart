@@ -1,4 +1,4 @@
-// models/cart_model.dart
+import 'package:spark_aquanix/constants/enums/payment_type.dart';
 import 'package:spark_aquanix/constants/enums/product_color.dart';
 
 class CartItem {
@@ -9,6 +9,7 @@ class CartItem {
   final String image;
   final ProductColor selectedColor;
   final String size;
+  final List<PaymentType> paymentTypes;
 
   CartItem({
     required this.productId,
@@ -18,13 +19,17 @@ class CartItem {
     required this.image,
     required this.selectedColor,
     required this.size,
+    required this.paymentTypes,
   });
 
   // Total price for this cart item
   double get totalPrice => price * quantity;
 
   // Create a copy of this cart item with updated quantity
-  CartItem copyWith({int? quantity}) {
+  CartItem copyWith({
+    int? quantity,
+    List<PaymentType>? paymentTypes,
+  }) {
     return CartItem(
       productId: productId,
       productName: productName,
@@ -33,6 +38,7 @@ class CartItem {
       image: image,
       selectedColor: selectedColor,
       size: size,
+      paymentTypes: paymentTypes ?? this.paymentTypes,
     );
   }
 
@@ -46,6 +52,7 @@ class CartItem {
       'image': image,
       'selectedColor': selectedColor.toString(),
       'size': size,
+      'paymentTypes': paymentTypes.map((type) => type.toString()).toList(),
     };
   }
 
@@ -59,6 +66,12 @@ class CartItem {
       image: map['image'] ?? '',
       selectedColor: ProductColor.fromString(map['selectedColor'] ?? 'Blue'),
       size: map['size'] ?? '',
+      paymentTypes: (map['paymentTypes'] as List<dynamic>?)
+              ?.map((type) => PaymentType.values.firstWhere(
+                  (e) => e.toString() == type,
+                  orElse: () => PaymentType.cash))
+              .toList() ??
+          [],
     );
   }
 }

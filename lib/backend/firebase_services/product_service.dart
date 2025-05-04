@@ -61,7 +61,8 @@ class ProductService {
                 doc.data() as Map<String, dynamic>, doc.id);
           })
           .where((product) =>
-              product.name.toLowerCase().contains(query.toLowerCase()))
+              product.name.toLowerCase().contains(query.toLowerCase()) ||
+              product.category.toLowerCase().contains(query.toLowerCase()))
           .toList();
     });
   }

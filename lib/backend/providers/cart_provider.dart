@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spark_aquanix/backend/model/cart_model.dart';
+import 'package:spark_aquanix/constants/enums/payment_type.dart';
 import 'package:spark_aquanix/constants/enums/product_color.dart';
 import 'dart:convert';
 
@@ -42,6 +43,7 @@ class CartProvider with ChangeNotifier {
     required String image,
     required ProductColor selectedColor,
     required String size,
+    required List<PaymentType> paymentTypes,
   }) {
     final index = _items.indexWhere((item) =>
         item.productId == productId &&
@@ -62,6 +64,7 @@ class CartProvider with ChangeNotifier {
           image: image,
           selectedColor: selectedColor,
           size: size,
+          paymentTypes: paymentTypes,
         ),
       );
     }

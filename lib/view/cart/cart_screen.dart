@@ -137,14 +137,14 @@ class CartScreen extends StatelessWidget {
                               label: 'Undo',
                               onPressed: () {
                                 cartProvider.addItem(
-                                  productId: cartItem.productId,
-                                  productName: cartItem.productName,
-                                  price: cartItem.price,
-                                  quantity: cartItem.quantity,
-                                  image: cartItem.image,
-                                  selectedColor: cartItem.selectedColor,
-                                  size: cartItem.size,
-                                );
+                                    productId: cartItem.productId,
+                                    productName: cartItem.productName,
+                                    price: cartItem.price,
+                                    quantity: cartItem.quantity,
+                                    image: cartItem.image,
+                                    selectedColor: cartItem.selectedColor,
+                                    size: cartItem.size,
+                                    paymentTypes: cartItem.paymentTypes);
                               },
                             ),
                           ),

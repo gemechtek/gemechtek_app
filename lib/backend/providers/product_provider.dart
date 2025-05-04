@@ -1,4 +1,3 @@
-// providers/product_provider.dart
 import 'package:flutter/foundation.dart';
 import 'package:spark_aquanix/backend/firebase_services/product_service.dart';
 import 'package:spark_aquanix/backend/model/User_Product.dart';
@@ -9,11 +8,14 @@ class ProductProvider with ChangeNotifier {
   List<UserProduct> _products = [];
   List<UserProduct> _featuredProducts = [];
   List<UserProduct> _discountedProducts = [];
+  List<UserProduct> _searchResults = [];
   List<String> _categories = [];
   bool _isLoading = false;
   String _selectedCategory = '';
+  String _searchQuery = '';
 
-  List<UserProduct> get products => _products;
+  List<UserProduct> get products =>
+      _searchQuery.isEmpty ? _products : _searchResults;
   List<UserProduct> get featuredProducts => _featuredProducts;
   List<UserProduct> get discountedProducts => _discountedProducts;
   List<String> get categories => _categories;
@@ -81,13 +83,21 @@ class ProductProvider with ChangeNotifier {
     });
   }
 
-  // Search products
+  // Search products by name or category
   void searchProducts(String query) {
+    _searchQuery = query.trim();
+    if (_searchQuery.isEmpty) {
+      _searchResults = [];
+      _isLoading = false;
+      notifyListeners();
+      return;
+    }
+
     _isLoading = true;
     notifyListeners();
 
     _productService.searchProducts(query).listen((productsList) {
-      _products = productsList;
+      _searchResults = productsList;
       _isLoading = false;
       notifyListeners();
     });

@@ -8,6 +8,9 @@ import 'package:spark_aquanix/backend/providers/order_provider.dart';
 import 'package:spark_aquanix/constants/enums/payment_type.dart';
 import 'package:spark_aquanix/view/products/widgets/image_carousel.dart';
 
+import 'widgets/custom_dropdown.dart';
+import 'widgets/custom_text_filed.dart';
+
 class CheckoutScreen extends StatefulWidget {
   const CheckoutScreen({super.key});
 
@@ -67,7 +70,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       const double shippingCost = 5.0; // Fixed shipping cost
 
       await orderProvider.placeOrder(
-        // userId: 'user_id', // Replace with actual user ID from auth
         userId: userModel?.id ?? "",
         cartItems: cartProvider.items,
         deliveryAddress: deliveryAddress,
@@ -94,6 +96,47 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         _isPlacingOrder = false;
       });
     }
+  }
+
+  List<PaymentType> _getCommonPaymentTypes(BuildContext context) {
+    final cartProvider = Provider.of<CartProvider>(context, listen: false);
+    if (cartProvider.items.isEmpty) return [];
+
+    // Get the paymentTypes lists from all CartItems
+    final paymentTypesLists =
+        cartProvider.items.map((item) => item.paymentTypes).toList();
+
+    // Check if any item has PaymentType.all
+    bool hasAllPaymentTypes = paymentTypesLists
+        .any((paymentTypes) => paymentTypes.contains(PaymentType.all));
+
+    List<PaymentType> result;
+    if (hasAllPaymentTypes) {
+      // If any item supports all payment types, show all options except PaymentType.all
+      result =
+          PaymentType.values.where((type) => type != PaymentType.all).toList();
+    } else {
+      // Otherwise, find the intersection of all paymentTypes lists, excluding PaymentType.all
+      Set<PaymentType> commonPaymentTypes = paymentTypesLists.first
+          .where((type) => type != PaymentType.all)
+          .toSet();
+      for (var paymentTypes in paymentTypesLists.skip(1)) {
+        commonPaymentTypes = commonPaymentTypes.intersection(
+            paymentTypes.where((type) => type != PaymentType.all).toSet());
+      }
+      result = commonPaymentTypes.toList();
+    }
+
+    // Ensure the current _selectedPaymentMethod is valid; if not, set to first available
+    if (!result.contains(_selectedPaymentMethod) && result.isNotEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        setState(() {
+          _selectedPaymentMethod = result.first;
+        });
+      });
+    }
+
+    return result;
   }
 
   @override
@@ -156,98 +199,77 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 12),
-              TextFormField(
+              CustomTextField(
                 controller: _fullNameController,
-                decoration: const InputDecoration(
-                  labelText: 'Full Name',
-                  border: OutlineInputBorder(),
-                ),
-                validator: (value) =>
-                    value!.isEmpty ? 'Please enter your full name' : null,
+                labelText: 'Full Name',
+                keyboardType: TextInputType.name,
               ),
-              const SizedBox(height: 12),
-              TextFormField(
+              CustomTextField(
                 controller: _phoneNumberController,
-                decoration: const InputDecoration(
-                  labelText: 'Phone Number',
-                  border: OutlineInputBorder(),
-                ),
-                validator: (value) =>
-                    value!.isEmpty ? 'Please enter your phone number' : null,
+                labelText: 'Phone Number',
+                keyboardType: TextInputType.phone,
               ),
-              const SizedBox(height: 12),
-              TextFormField(
+              CustomTextField(
                 controller: _addressLine1Controller,
-                decoration: const InputDecoration(
-                  labelText: 'Address Line 1',
-                  border: OutlineInputBorder(),
-                ),
-                validator: (value) =>
-                    value!.isEmpty ? 'Please enter your address' : null,
+                labelText: 'Address Line 1',
+                keyboardType: TextInputType.streetAddress,
               ),
-              const SizedBox(height: 12),
-              TextFormField(
+              CustomTextField(
                 controller: _addressLine2Controller,
-                decoration: const InputDecoration(
-                  labelText: 'Address Line 2 (Optional)',
-                  border: OutlineInputBorder(),
-                ),
+                labelText: 'Address Line 2 (Optional)',
+                isRequired: false,
+                keyboardType: TextInputType.streetAddress,
               ),
-              const SizedBox(height: 12),
-              TextFormField(
+              CustomTextField(
                 controller: _cityController,
-                decoration: const InputDecoration(
-                  labelText: 'City',
-                  border: OutlineInputBorder(),
-                ),
-                validator: (value) =>
-                    value!.isEmpty ? 'Please enter your city' : null,
+                labelText: 'City',
+                keyboardType: TextInputType.text,
               ),
-              const SizedBox(height: 12),
-              TextFormField(
+              CustomTextField(
                 controller: _stateController,
-                decoration: const InputDecoration(
-                  labelText: 'State',
-                  border: OutlineInputBorder(),
-                ),
-                validator: (value) =>
-                    value!.isEmpty ? 'Please enter your state' : null,
+                labelText: 'State',
+                keyboardType: TextInputType.text,
               ),
-              const SizedBox(height: 12),
-              TextFormField(
+              CustomTextField(
                 controller: _postalCodeController,
-                decoration: const InputDecoration(
-                  labelText: 'Postal Code',
-                  border: OutlineInputBorder(),
-                ),
-                validator: (value) =>
-                    value!.isEmpty ? 'Please enter your postal code' : null,
+                labelText: 'Postal Code',
+                keyboardType: TextInputType.number,
               ),
-              const SizedBox(height: 12),
-              TextFormField(
+              CustomTextField(
                 controller: _countryController,
-                decoration: const InputDecoration(
-                  labelText: 'Country',
-                  border: OutlineInputBorder(),
-                ),
-                validator: (value) =>
-                    value!.isEmpty ? 'Please enter your country' : null,
+                labelText: 'Country',
+                keyboardType: TextInputType.text,
               ),
 
-              const SizedBox(height: 24),
+              const SizedBox(height: 12),
 
               // Payment Method
-              const Text(
-                'Payment Method',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 12),
-              DropdownButtonFormField<PaymentType>(
+              // const Text(
+              //   'Payment Method',
+              //   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              // ),
+              // const SizedBox(height: 12),
+              // DropdownButtonFormField<PaymentType>(
+              //   value: _selectedPaymentMethod,
+              //   decoration: const InputDecoration(
+              //     border: OutlineInputBorder(),
+              //   ),
+              //   items: PaymentType.values
+              //       .map((method) => DropdownMenuItem(
+              //             value: method,
+              //             child: Text(method.toString().split('.').last),
+              //           ))
+              //       .toList(),
+              //   onChanged: (value) {
+              //     setState(() {
+              //       _selectedPaymentMethod = value!;
+              //     });
+              //   },
+              // ),
+              CustomDropdownButtonFormField<PaymentType>(
                 value: _selectedPaymentMethod,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                ),
-                items: PaymentType.values
+                labelText: 'Payment Method',
+                items: _getCommonPaymentTypes(context)
                     .map((method) => DropdownMenuItem(
                           value: method,
                           child: Text(method.toString().split('.').last),
@@ -259,7 +281,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   });
                 },
               ),
-
               const SizedBox(height: 24),
 
               // Order Summary
@@ -267,7 +288,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 'Order Summary',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 12),
+              const SizedBox(height: 12),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
