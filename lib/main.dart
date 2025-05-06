@@ -4,16 +4,19 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:spark_aquanix/app/app_theme.dart';
 import 'package:spark_aquanix/app/providers.dart';
+import 'package:spark_aquanix/backend/firebase_services/notification_service.dart';
+import 'package:spark_aquanix/constants/app_logs.dart';
 
 import 'package:spark_aquanix/firebase_options.dart';
 import 'package:spark_aquanix/navigation/main_navigation.dart';
 import 'package:spark_aquanix/view/auth/login.dart';
 import 'package:provider/provider.dart';
-import 'backend/firebase_services/local_pref.dart';
+import 'package:spark_aquanix/backend/firebase_services/local_pref.dart';
 
+// Handle background messages
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // Handle background messages
-  print('Handling a background message: ${message.messageId}');
+  AppLogger.log('Handling a background message: ${message.messageId}');
 }
 
 void main() async {
@@ -27,6 +30,9 @@ void main() async {
 
   // Set up FCM background handler - this is still needed at startup
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
+  // Initialize notification service (will add this class later)
+  await NotificationService.initialize();
 
   // Check if user is logged in
   final LocalPreferenceService localPrefs = LocalPreferenceService();
@@ -72,7 +78,8 @@ class _PermissionHandlerState extends State<PermissionHandler> {
   }
 
   Future<void> _requestPermissionsThenNavigate() async {
-    await FirebaseMessaging.instance.requestPermission(
+    // Request notification permissions
+    final settings = await FirebaseMessaging.instance.requestPermission(
       alert: true,
       announcement: false,
       badge: true,
@@ -81,6 +88,13 @@ class _PermissionHandlerState extends State<PermissionHandler> {
       provisional: false,
       sound: true,
     );
+
+    AppLogger.log('User granted permission: ${settings.authorizationStatus}');
+
+    if (widget.isLoggedIn) {
+      // Subscribe to topics if user is logged in
+      await NotificationService.subscribeToDefaultTopics();
+    }
 
     if (!mounted) return;
 

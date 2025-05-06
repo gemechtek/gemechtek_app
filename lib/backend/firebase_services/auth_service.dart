@@ -1,11 +1,12 @@
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
+
 import '../model/user_model.dart';
 
 import '../../constants/error_formatter.dart';
 import 'local_pref.dart';
+import 'notification_service.dart';
 
 class FirebaseAuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -154,6 +155,8 @@ class FirebaseAuthService {
       // Clear local storage first
       await _localPrefs.clearUserData();
 
+      // Unsubscribe from all topics before logging out
+      await NotificationService.unsubscribeFromAllTopics();
       // Then sign out from Firebase
       await _auth.signOut();
     } catch (e) {
