@@ -71,8 +71,8 @@ class _OrdersScreenState extends State<OrdersScreen>
 
           final ongoingOrders = orderProvider.orders
               .where((order) =>
-                  order.status == OrderStatus.pending ||
-                  order.status == OrderStatus.processing)
+                  order.status != OrderStatus.delivered ||
+                  order.status != OrderStatus.cancelled)
               .toList();
           final completedOrders = orderProvider.orders
               .where((order) =>

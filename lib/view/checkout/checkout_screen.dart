@@ -66,11 +66,13 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         country: _countryController.text,
       );
 
-      const double tax = 0.1; // 10% tax rate
-      const double shippingCost = 5.0; // Fixed shipping cost
+      const double tax = 0.1;
+      const double shippingCost = 5.0;
 
       await orderProvider.placeOrder(
         userId: userModel?.id ?? "",
+        name: userModel?.name ?? "",
+        fcm: userModel?.fcmToken ?? "",
         cartItems: cartProvider.items,
         deliveryAddress: deliveryAddress,
         paymentMethod: _selectedPaymentMethod,

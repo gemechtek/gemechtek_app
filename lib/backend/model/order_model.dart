@@ -116,6 +116,8 @@ class DeliveryAddress {
 class OrderDetails {
   final String? id;
   final String userId;
+  final String userName; // Added user name field
+  final String userFcmToken; // Added FCM token field
   final List<OrderItem> items;
   final double subtotal;
   final double tax;
@@ -130,6 +132,8 @@ class OrderDetails {
   OrderDetails({
     this.id,
     required this.userId,
+    required this.userName, // Added user name parameter
+    required this.userFcmToken, // Added FCM token parameter
     required this.items,
     required this.subtotal,
     required this.tax,
@@ -147,6 +151,8 @@ class OrderDetails {
   Map<String, dynamic> toMap() {
     return {
       'userId': userId,
+      'userName': userName,
+      'userFcmToken': userFcmToken,
       'items': items.map((item) => item.toMap()).toList(),
       'subtotal': subtotal,
       'tax': tax,
@@ -165,6 +171,8 @@ class OrderDetails {
     return OrderDetails(
       id: docId,
       userId: data['userId'] ?? '',
+      userName: data['userName'] ?? '',
+      userFcmToken: data['userFcmToken'] ?? '',
       items: (data['items'] as List<dynamic>?)
               ?.map((item) => OrderItem.fromMap(item))
               .toList() ??
@@ -179,6 +187,39 @@ class OrderDetails {
       status: OrderStatus.fromString(data['status'] ?? 'Pending'),
       createdAt: (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
       updatedAt: (data['updatedAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
+    );
+  }
+
+  OrderDetails copyWith({
+    String? id,
+    String? userId,
+    String? userName,
+    String? userFcmToken,
+    List<OrderItem>? items,
+    double? subtotal,
+    double? tax,
+    double? shippingCost,
+    double? total,
+    DeliveryAddress? deliveryAddress,
+    PaymentType? paymentMethod,
+    OrderStatus? status,
+    DateTime? updatedAt,
+  }) {
+    return OrderDetails(
+      id: id ?? this.id,
+      userId: userId ?? this.userId,
+      userName: userName ?? this.userName,
+      userFcmToken: userFcmToken ?? this.userFcmToken,
+      items: items ?? this.items,
+      subtotal: subtotal ?? this.subtotal,
+      tax: tax ?? this.tax,
+      shippingCost: shippingCost ?? this.shippingCost,
+      total: total ?? this.total,
+      deliveryAddress: deliveryAddress ?? this.deliveryAddress,
+      paymentMethod: paymentMethod ?? this.paymentMethod,
+      status: status ?? this.status,
+      createdAt: createdAt,
+      updatedAt: updatedAt ?? DateTime.now(),
     );
   }
 }

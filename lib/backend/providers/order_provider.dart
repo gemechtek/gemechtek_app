@@ -29,6 +29,8 @@ class OrderProvider with ChangeNotifier {
   // Place a new order
   Future<String> placeOrder({
     required String userId,
+    required String name,
+    required String fcm,
     required List<CartItem> cartItems,
     required DeliveryAddress deliveryAddress,
     required PaymentType paymentMethod,
@@ -50,6 +52,8 @@ class OrderProvider with ChangeNotifier {
       // Create the order
       final order = OrderDetails(
         userId: userId,
+        userName: name,
+        userFcmToken: fcm,
         items: orderItems,
         subtotal: subtotal,
         tax: tax,
