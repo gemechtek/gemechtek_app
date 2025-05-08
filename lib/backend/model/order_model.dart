@@ -113,11 +113,40 @@ class DeliveryAddress {
   }
 }
 
+// New class to track status changes
+class StatusChange {
+  final OrderStatus status;
+  final DateTime timestamp;
+  final String? comment;
+
+  StatusChange({
+    required this.status,
+    required this.timestamp,
+    this.comment,
+  });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'status': status.toString(),
+      'timestamp': Timestamp.fromDate(timestamp),
+      'comment': comment,
+    };
+  }
+
+  factory StatusChange.fromMap(Map<String, dynamic> map) {
+    return StatusChange(
+      status: OrderStatus.fromString(map['status'] ?? 'Pending'),
+      timestamp: (map['timestamp'] as Timestamp?)?.toDate() ?? DateTime.now(),
+      comment: map['comment'],
+    );
+  }
+}
+
 class OrderDetails {
   final String? id;
   final String userId;
-  final String userName; // Added user name field
-  final String userFcmToken; // Added FCM token field
+  final String userName;
+  final String userFcmToken;
   final List<OrderItem> items;
   final double subtotal;
   final double tax;
@@ -128,12 +157,14 @@ class OrderDetails {
   final OrderStatus status;
   final DateTime createdAt;
   final DateTime updatedAt;
+  final List<StatusChange> statusHistory;
+  final DateTime? estimatedDeliveryDate;
 
   OrderDetails({
     this.id,
     required this.userId,
-    required this.userName, // Added user name parameter
-    required this.userFcmToken, // Added FCM token parameter
+    required this.userName,
+    required this.userFcmToken,
     required this.items,
     required this.subtotal,
     required this.tax,
@@ -144,11 +175,41 @@ class OrderDetails {
     this.status = OrderStatus.pending,
     DateTime? createdAt,
     DateTime? updatedAt,
+    List<StatusChange>? statusHistory,
+    this.estimatedDeliveryDate,
   })  : createdAt = createdAt ?? DateTime.now(),
-        updatedAt = updatedAt ?? DateTime.now();
+        updatedAt = updatedAt ?? DateTime.now(),
+        statusHistory = statusHistory ??
+            [
+              StatusChange(
+                status: OrderStatus.pending,
+                timestamp: createdAt ?? DateTime.now(),
+                comment: 'Order placed',
+              )
+            ];
+
+  DateTime? getEstimatedDeliveryDate() {
+    final confirmedStatusChange = statusHistory.firstWhere(
+      (change) => change.status == OrderStatus.orderConfirmed,
+      orElse: () => StatusChange(
+        status: OrderStatus.pending,
+        timestamp: DateTime.now(),
+      ),
+    );
+
+    if (confirmedStatusChange.status == OrderStatus.orderConfirmed) {
+      return confirmedStatusChange.timestamp.add(const Duration(days: 2));
+    }
+
+    return null;
+  }
 
   // Convert to Map for Firestore
   Map<String, dynamic> toMap() {
+    // Calculate estimated delivery date if not already set
+    final DateTime? deliveryDate =
+        estimatedDeliveryDate ?? getEstimatedDeliveryDate();
+
     return {
       'userId': userId,
       'userName': userName,
@@ -163,11 +224,32 @@ class OrderDetails {
       'status': status.toString(),
       'createdAt': Timestamp.fromDate(createdAt),
       'updatedAt': Timestamp.fromDate(updatedAt),
+      'statusHistory': statusHistory.map((change) => change.toMap()).toList(),
+      'estimatedDeliveryDate':
+          deliveryDate != null ? Timestamp.fromDate(deliveryDate) : null,
     };
   }
 
   // Create from Firestore document
   factory OrderDetails.fromFirestore(Map<String, dynamic> data, String docId) {
+    // Parse status history or create default
+    List<StatusChange> statusHistory = [];
+    if (data['statusHistory'] != null) {
+      statusHistory = (data['statusHistory'] as List<dynamic>)
+          .map((item) => StatusChange.fromMap(item))
+          .toList();
+    } else {
+      // Create default history based on current status
+      statusHistory = [
+        StatusChange(
+          status: OrderStatus.fromString(data['status'] ?? 'Pending'),
+          timestamp:
+              (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
+          comment: 'Order created',
+        ),
+      ];
+    }
+
     return OrderDetails(
       id: docId,
       userId: data['userId'] ?? '',
@@ -187,6 +269,35 @@ class OrderDetails {
       status: OrderStatus.fromString(data['status'] ?? 'Pending'),
       createdAt: (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
       updatedAt: (data['updatedAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
+      statusHistory: statusHistory,
+      estimatedDeliveryDate:
+          (data['estimatedDeliveryDate'] as Timestamp?)?.toDate(),
+    );
+  }
+
+  // Add a new status change
+  OrderDetails updateStatus(OrderStatus newStatus, {String? comment}) {
+    final updatedHistory = [...statusHistory];
+
+    // Add new status change
+    updatedHistory.add(StatusChange(
+      status: newStatus,
+      timestamp: DateTime.now(),
+      comment: comment,
+    ));
+
+    // Calculate new estimated delivery date if status is changing to confirmed
+    DateTime? newEstimatedDelivery = estimatedDeliveryDate;
+    if (newStatus == OrderStatus.orderConfirmed &&
+        status != OrderStatus.orderConfirmed) {
+      newEstimatedDelivery = DateTime.now().add(const Duration(days: 2));
+    }
+
+    return copyWith(
+      status: newStatus,
+      updatedAt: DateTime.now(),
+      statusHistory: updatedHistory,
+      estimatedDeliveryDate: newEstimatedDelivery,
     );
   }
 
@@ -204,6 +315,8 @@ class OrderDetails {
     PaymentType? paymentMethod,
     OrderStatus? status,
     DateTime? updatedAt,
+    List<StatusChange>? statusHistory,
+    DateTime? estimatedDeliveryDate,
   }) {
     return OrderDetails(
       id: id ?? this.id,
@@ -219,7 +332,10 @@ class OrderDetails {
       paymentMethod: paymentMethod ?? this.paymentMethod,
       status: status ?? this.status,
       createdAt: createdAt,
-      updatedAt: updatedAt ?? DateTime.now(),
+      updatedAt: updatedAt ?? this.updatedAt,
+      statusHistory: statusHistory ?? this.statusHistory,
+      estimatedDeliveryDate:
+          estimatedDeliveryDate ?? this.estimatedDeliveryDate,
     );
   }
 }

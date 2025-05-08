@@ -1,7 +1,8 @@
 enum OrderStatus {
   pending,
-  processing,
+  orderConfirmed,
   shipped,
+  outForDelivery,
   delivered,
   cancelled;
 
@@ -9,8 +10,9 @@ enum OrderStatus {
   String toString() {
     return switch (this) {
       OrderStatus.pending => 'Pending',
-      OrderStatus.processing => 'Processing',
+      OrderStatus.orderConfirmed => 'Order Confirmed',
       OrderStatus.shipped => 'Shipped',
+      OrderStatus.outForDelivery => 'Out for Delivery',
       OrderStatus.delivered => 'Delivered',
       OrderStatus.cancelled => 'Cancelled',
     };
@@ -21,11 +23,12 @@ enum OrderStatus {
   static OrderStatus fromString(String value) {
     return switch (value) {
       'Pending' => OrderStatus.pending,
-      'Processing' => OrderStatus.processing,
+      'Order Confirmed' => OrderStatus.orderConfirmed,
       'Shipped' => OrderStatus.shipped,
+      'Out for Delivery' => OrderStatus.outForDelivery,
       'Delivered' => OrderStatus.delivered,
       'Cancelled' => OrderStatus.cancelled,
-      _ => OrderStatus.pending,
+      _ => OrderStatus.pending, // Default fallback
     };
   }
 }

@@ -123,7 +123,7 @@ class OrderService {
 
       // Only allow cancellation if the order is pending or processing
       if (order.status != OrderStatus.pending &&
-          order.status != OrderStatus.processing) {
+          order.status != OrderStatus.orderConfirmed) {
         throw Exception('Cannot cancel order in ${order.status} status');
       }
 
