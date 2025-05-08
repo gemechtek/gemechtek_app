@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+
 import 'package:spark_aquanix/view/cart/cart_screen.dart';
 import 'package:spark_aquanix/view/home/home_screen.dart';
 import 'package:spark_aquanix/view/orders/orders_screen.dart';
@@ -9,11 +10,10 @@ import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
 class MainNavigationScreen extends StatefulWidget {
   const MainNavigationScreen({super.key});
 
-  // Static controller to be accessed globally
   static PersistentTabController? controller;
 
   @override
-  _MainNavigationScreenState createState() => _MainNavigationScreenState();
+  State<MainNavigationScreen> createState() => _MainNavigationScreenState();
 }
 
 class _MainNavigationScreenState extends State<MainNavigationScreen> {

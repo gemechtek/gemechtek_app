@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:spark_aquanix/backend/providers/notification_provider.dart';
 import 'package:spark_aquanix/backend/providers/product_provider.dart';
+import 'package:spark_aquanix/navigation/navigator_helper.dart';
 import 'package:spark_aquanix/view/home/widgets/product_grid.dart';
 import 'package:spark_aquanix/view/home/widgets/whats_app_chat.dart';
+import 'package:spark_aquanix/widgets/notification_badge.dart';
 
 import 'widgets/carousel_screen.dart';
 
@@ -24,6 +27,10 @@ class _HomeScreenState extends State<HomeScreen> {
     _searchController.addListener(() {
       Provider.of<ProductProvider>(context, listen: false)
           .searchProducts(_searchController.text);
+    });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<NotificationProvider>(context, listen: false)
+          .refreshNotifications();
     });
   }
 
@@ -57,10 +64,21 @@ class _HomeScreenState extends State<HomeScreen> {
           title: const Text('Welcome'),
           centerTitle: false,
           actions: [
-            IconButton(
-              icon: const Icon(Icons.notifications_outlined),
-              onPressed: () {},
+            Consumer<NotificationProvider>(
+              builder: (context, notificationProvider, _) {
+                return NotificationBadge(
+                  onTap: () =>
+                      NavigationHelper.navigateToNotificationScreen(context),
+                  child: const Icon(Icons.notifications),
+                );
+              },
             ),
+            // IconButton(
+            //   icon: const Icon(Icons.notifications_outlined),
+            //   onPressed: () {
+            //     NavigationHelper.navigateToNotificationScreen(context);
+            //   },
+            // ),
             const SizedBox(width: 16),
           ],
         ),
