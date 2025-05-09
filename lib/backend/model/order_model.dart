@@ -1,4 +1,6 @@
 // models/order_model.dart
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:spark_aquanix/constants/enums/order_status.dart';
 import 'package:spark_aquanix/constants/enums/payment_type.dart';
@@ -66,6 +68,7 @@ class OrderItem {
 }
 
 class DeliveryAddress {
+  final String id;
   final String fullName;
   final String phoneNumber;
   final String addressLine1;
@@ -74,8 +77,10 @@ class DeliveryAddress {
   final String state;
   final String postalCode;
   final String country;
+  final bool isDefault;
 
   DeliveryAddress({
+    required this.id,
     required this.fullName,
     required this.phoneNumber,
     required this.addressLine1,
@@ -84,10 +89,12 @@ class DeliveryAddress {
     required this.state,
     required this.postalCode,
     required this.country,
+    this.isDefault = false,
   });
 
   Map<String, dynamic> toMap() {
     return {
+      'id': id,
       'fullName': fullName,
       'phoneNumber': phoneNumber,
       'addressLine1': addressLine1,
@@ -96,11 +103,13 @@ class DeliveryAddress {
       'state': state,
       'postalCode': postalCode,
       'country': country,
+      'isDefault': isDefault,
     };
   }
 
   factory DeliveryAddress.fromMap(Map<String, dynamic> map) {
     return DeliveryAddress(
+      id: map['id'] ?? '',
       fullName: map['fullName'] ?? '',
       phoneNumber: map['phoneNumber'] ?? '',
       addressLine1: map['addressLine1'] ?? '',
@@ -109,6 +118,37 @@ class DeliveryAddress {
       state: map['state'] ?? '',
       postalCode: map['postalCode'] ?? '',
       country: map['country'] ?? '',
+      isDefault: map['isDefault'] ?? false,
+    );
+  }
+  String toJson() => json.encode(toMap());
+
+  factory DeliveryAddress.fromJson(String source) =>
+      DeliveryAddress.fromMap(json.decode(source));
+
+  DeliveryAddress copyWith({
+    String? id,
+    String? fullName,
+    String? phoneNumber,
+    String? addressLine1,
+    String? addressLine2,
+    String? city,
+    String? state,
+    String? postalCode,
+    String? country,
+    bool? isDefault,
+  }) {
+    return DeliveryAddress(
+      id: id ?? this.id,
+      fullName: fullName ?? this.fullName,
+      phoneNumber: phoneNumber ?? this.phoneNumber,
+      addressLine1: addressLine1 ?? this.addressLine1,
+      addressLine2: addressLine2 ?? this.addressLine2,
+      city: city ?? this.city,
+      state: state ?? this.state,
+      postalCode: postalCode ?? this.postalCode,
+      country: country ?? this.country,
+      isDefault: isDefault ?? this.isDefault,
     );
   }
 }

@@ -7,9 +7,11 @@ import 'package:spark_aquanix/backend/providers/cart_provider.dart';
 import 'package:spark_aquanix/backend/providers/order_provider.dart';
 import 'package:spark_aquanix/constants/enums/payment_type.dart';
 import 'package:spark_aquanix/view/products/widgets/image_carousel.dart';
+import 'package:uuid/uuid.dart';
 
+import 'widgets/address_card.dart';
+import 'widgets/address_form.dart';
 import 'widgets/custom_dropdown.dart';
-import 'widgets/custom_text_filed.dart';
 
 class CheckoutScreen extends StatefulWidget {
   const CheckoutScreen({super.key});
@@ -21,49 +23,119 @@ class CheckoutScreen extends StatefulWidget {
 class _CheckoutScreenState extends State<CheckoutScreen> {
   final _formKey = GlobalKey<FormState>();
   PaymentType _selectedPaymentMethod = PaymentType.cash;
-  final _fullNameController = TextEditingController();
-  final _phoneNumberController = TextEditingController();
-  final _addressLine1Controller = TextEditingController();
-  final _addressLine2Controller = TextEditingController();
-  final _cityController = TextEditingController();
-  final _stateController = TextEditingController();
-  final _postalCodeController = TextEditingController();
-  final _countryController = TextEditingController();
   bool _isPlacingOrder = false;
+  bool _showAddressForm = false;
+  DeliveryAddress? _selectedAddress;
+  DeliveryAddress? _addressBeingEdited;
+  List<DeliveryAddress> _savedAddresses = [];
+  bool _isLoadingAddresses = true;
 
   @override
-  void dispose() {
-    _fullNameController.dispose();
-    _phoneNumberController.dispose();
-    _addressLine1Controller.dispose();
-    _addressLine2Controller.dispose();
-    _cityController.dispose();
-    _stateController.dispose();
-    _postalCodeController.dispose();
-    _countryController.dispose();
-    super.dispose();
+  void initState() {
+    super.initState();
+    _loadSavedAddresses();
+  }
+
+  Future<void> _loadSavedAddresses() async {
+    setState(() {
+      _isLoadingAddresses = true;
+    });
+
+    try {
+      final addresses = await LocalPreferenceService().getSavedAddresses();
+      final defaultAddress = addresses.isNotEmpty
+          ? addresses.firstWhere((addr) => addr.isDefault,
+              orElse: () => addresses.first)
+          : null;
+
+      setState(() {
+        _savedAddresses = addresses;
+        _selectedAddress = defaultAddress;
+        _isLoadingAddresses = false;
+      });
+    } catch (e) {
+      setState(() {
+        _isLoadingAddresses = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to load addresses: $e')),
+      );
+    }
+  }
+
+  Future<void> _saveAddress(DeliveryAddress address) async {
+    try {
+      await LocalPreferenceService().saveAddress(address);
+
+      // Reset form state
+      setState(() {
+        _showAddressForm = false;
+        _addressBeingEdited = null;
+      });
+
+      // Reload addresses
+      await _loadSavedAddresses();
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Address saved successfully')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to save address: $e')),
+      );
+    }
+  }
+
+  Future<void> _deleteAddress(String addressId) async {
+    try {
+      await LocalPreferenceService().deleteAddress(addressId);
+      await _loadSavedAddresses();
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Address deleted successfully')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to delete address: $e')),
+      );
+    }
+  }
+
+  void _editAddress(DeliveryAddress address) {
+    setState(() {
+      _addressBeingEdited = address;
+      _showAddressForm = true;
+    });
   }
 
   Future<void> _placeOrder(BuildContext context) async {
-    if (!_formKey.currentState!.validate()) return;
+    if (_selectedAddress == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text('Please select or add a delivery address')),
+      );
+      return;
+    }
 
     setState(() {
       _isPlacingOrder = true;
     });
+
     UserModel? userModel = await LocalPreferenceService().getUserData();
     try {
       final cartProvider = Provider.of<CartProvider>(context, listen: false);
       final orderProvider = Provider.of<OrderProvider>(context, listen: false);
 
       final deliveryAddress = DeliveryAddress(
-        fullName: _fullNameController.text,
-        phoneNumber: _phoneNumberController.text,
-        addressLine1: _addressLine1Controller.text,
-        addressLine2: _addressLine2Controller.text,
-        city: _cityController.text,
-        state: _stateController.text,
-        postalCode: _postalCodeController.text,
-        country: _countryController.text,
+        id: _selectedAddress!.id,
+        fullName: _selectedAddress!.fullName,
+        phoneNumber: _selectedAddress!.phoneNumber,
+        addressLine1: _selectedAddress!.addressLine1,
+        addressLine2: _selectedAddress!.addressLine2,
+        city: _selectedAddress!.city,
+        state: _selectedAddress!.state,
+        postalCode: _selectedAddress!.postalCode,
+        country: _selectedAddress!.country,
       );
 
       const double tax = 0.1;
@@ -195,79 +267,94 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
               const SizedBox(height: 24),
 
-              // Delivery Address
-              const Text(
-                'Delivery Address',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              // Delivery Address Section
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'Delivery Address',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  if (!_showAddressForm && _savedAddresses.isNotEmpty)
+                    TextButton.icon(
+                      icon: const Icon(Icons.add, size: 18, color: Colors.blue),
+                      label: const Text('Add New'),
+                      onPressed: () {
+                        setState(() {
+                          _showAddressForm = true;
+                          _addressBeingEdited = null;
+                        });
+                      },
+                    ),
+                ],
               ),
               const SizedBox(height: 12),
-              CustomTextField(
-                controller: _fullNameController,
-                labelText: 'Full Name',
-                keyboardType: TextInputType.name,
-              ),
-              CustomTextField(
-                controller: _phoneNumberController,
-                labelText: 'Phone Number',
-                keyboardType: TextInputType.phone,
-              ),
-              CustomTextField(
-                controller: _addressLine1Controller,
-                labelText: 'Address Line 1',
-                keyboardType: TextInputType.streetAddress,
-              ),
-              CustomTextField(
-                controller: _addressLine2Controller,
-                labelText: 'Address Line 2 (Optional)',
-                isRequired: false,
-                keyboardType: TextInputType.streetAddress,
-              ),
-              CustomTextField(
-                controller: _cityController,
-                labelText: 'City',
-                keyboardType: TextInputType.text,
-              ),
-              CustomTextField(
-                controller: _stateController,
-                labelText: 'State',
-                keyboardType: TextInputType.text,
-              ),
-              CustomTextField(
-                controller: _postalCodeController,
-                labelText: 'Postal Code',
-                keyboardType: TextInputType.number,
-              ),
-              CustomTextField(
-                controller: _countryController,
-                labelText: 'Country',
-                keyboardType: TextInputType.text,
-              ),
 
-              const SizedBox(height: 12),
+              if (_isLoadingAddresses)
+                const Center(
+                  child: CircularProgressIndicator(),
+                )
+              else if (_showAddressForm)
+                // Show address form for adding/editing
+                AddressForm(
+                  initialAddress: _addressBeingEdited,
+                  onSave: _saveAddress,
+                  onCancel: () {
+                    setState(() {
+                      _showAddressForm = false;
+                      _addressBeingEdited = null;
+                    });
+                  },
+                )
+              else if (_savedAddresses.isEmpty)
+                // No saved addresses
+                Column(
+                  children: [
+                    const Text(
+                      'No saved addresses. Please add a delivery address.',
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                    const SizedBox(height: 16),
+                    ElevatedButton.icon(
+                      icon: const Icon(
+                        Icons.add,
+                        color: Colors.white,
+                      ),
+                      label: const Text('Add New Address'),
+                      onPressed: () {
+                        setState(() {
+                          _showAddressForm = true;
+                        });
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue,
+                        foregroundColor: Colors.white,
+                      ),
+                    ),
+                  ],
+                )
+              else
+                // List of saved addresses
+                Column(
+                  children: _savedAddresses.map((address) {
+                    final isSelected = _selectedAddress?.id == address.id;
+                    return AddressCard(
+                      address: address,
+                      isSelected: isSelected,
+                      onTap: () {
+                        setState(() {
+                          _selectedAddress = address;
+                        });
+                      },
+                      onEdit: () => _editAddress(address),
+                      onDelete: () => _deleteAddress(address.id),
+                    );
+                  }).toList(),
+                ),
+
+              const SizedBox(height: 24),
 
               // Payment Method
-              // const Text(
-              //   'Payment Method',
-              //   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              // ),
-              // const SizedBox(height: 12),
-              // DropdownButtonFormField<PaymentType>(
-              //   value: _selectedPaymentMethod,
-              //   decoration: const InputDecoration(
-              //     border: OutlineInputBorder(),
-              //   ),
-              //   items: PaymentType.values
-              //       .map((method) => DropdownMenuItem(
-              //             value: method,
-              //             child: Text(method.toString().split('.').last),
-              //           ))
-              //       .toList(),
-              //   onChanged: (value) {
-              //     setState(() {
-              //       _selectedPaymentMethod = value!;
-              //     });
-              //   },
-              // ),
               CustomDropdownButtonFormField<PaymentType>(
                 value: _selectedPaymentMethod,
                 labelText: 'Payment Method',
@@ -335,8 +422,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed:
-                      _isPlacingOrder ? null : () => _placeOrder(context),
+                  onPressed: _selectedAddress == null || _isPlacingOrder
+                      ? null
+                      : () => _placeOrder(context),
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     backgroundColor: Colors.blue,
