@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:spark_aquanix/view/auth/login.dart';
 import 'package:spark_aquanix/view/checkout/checkout_screen.dart';
+import 'package:spark_aquanix/view/checkout/widgets/order_placed.dart';
+import 'package:spark_aquanix/view/home/home_screen.dart';
 import 'package:spark_aquanix/view/notification/notification_screen.dart';
 import 'package:spark_aquanix/view/products/product_details.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
@@ -19,6 +21,16 @@ class NavigationHelper {
 
   static void navigateToHome(BuildContext context) {
     _switchToTab(0);
+    // pushScreen(
+    //   context,
+    //   screen: const HomeScreen(),
+    //   withNavBar: true,
+    //   pageTransitionAnimation: PageTransitionAnimation.cupertino,
+    // );
+  }
+
+  static void navigateToOrders(BuildContext context) {
+    _switchToTab(1);
     // pushScreen(
     //   context,
     //   screen: const HomeScreen(),
@@ -73,10 +85,26 @@ class NavigationHelper {
     );
   }
 
+  static void navigateToOrderPlaced(BuildContext context) {
+    pushScreen(
+      context,
+      screen: const OrderPlaced(),
+      withNavBar: false,
+      pageTransitionAnimation: PageTransitionAnimation.cupertino,
+    );
+  }
+
   static void navigateToLogin(BuildContext context) {
     pushReplacementWithoutNavBar(
       context,
       MaterialPageRoute(builder: (_) => const LoginScreen()),
+    );
+  }
+
+  static void navigateToHomeMain(BuildContext context) {
+    pushReplacementWithNavBar(
+      context,
+      MaterialPageRoute(builder: (_) => const MainNavigationScreen()),
     );
   }
 }

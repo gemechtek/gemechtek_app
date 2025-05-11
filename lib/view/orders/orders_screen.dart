@@ -239,21 +239,21 @@ class _OrdersScreenState extends State<OrdersScreen>
                   padding:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      order.status == OrderStatus.delivered
-                          ? const Row(
-                              children: [
-                                Text('Rate this Product'),
-                                SizedBox(width: 8),
-                                Icon(Icons.star_border, size: 18),
-                                Icon(Icons.star_border, size: 18),
-                                Icon(Icons.star_border, size: 18),
-                                Icon(Icons.star_border, size: 18),
-                                Icon(Icons.star_border, size: 18),
-                              ],
-                            )
-                          : const SizedBox(),
+                      // order.status == OrderStatus.delivered
+                      //     ? const Row(
+                      //         children: [
+                      //           Text('Rate this Product'),
+                      //           SizedBox(width: 8),
+                      //           Icon(Icons.star_border, size: 18),
+                      //           Icon(Icons.star_border, size: 18),
+                      //           Icon(Icons.star_border, size: 18),
+                      //           Icon(Icons.star_border, size: 18),
+                      //           Icon(Icons.star_border, size: 18),
+                      //         ],
+                      //       )
+                      //     : const SizedBox(),
                       ElevatedButton(
                         onPressed: () {
                           _showTrackingBottomSheet(context, order);

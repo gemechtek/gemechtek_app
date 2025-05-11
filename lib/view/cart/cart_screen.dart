@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:spark_aquanix/backend/providers/cart_provider.dart';
 import 'package:spark_aquanix/constants/enums/product_color.dart';
 import 'package:spark_aquanix/navigation/navigator_helper.dart';
-import 'package:spark_aquanix/view/checkout/checkout_screen.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({super.key});

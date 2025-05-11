@@ -6,6 +6,7 @@ import 'package:spark_aquanix/backend/model/user_model.dart';
 import 'package:spark_aquanix/backend/providers/cart_provider.dart';
 import 'package:spark_aquanix/backend/providers/order_provider.dart';
 import 'package:spark_aquanix/constants/enums/payment_type.dart';
+import 'package:spark_aquanix/navigation/navigator_helper.dart';
 import 'package:spark_aquanix/view/products/widgets/image_carousel.dart';
 import 'package:uuid/uuid.dart';
 
@@ -161,6 +162,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       );
 
       Navigator.pop(context);
+
+      NavigationHelper.navigateToOrderPlaced(context);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to place order: $e')),

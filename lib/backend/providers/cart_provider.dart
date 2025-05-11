@@ -7,6 +7,12 @@ import 'dart:convert';
 
 class CartProvider with ChangeNotifier {
   List<CartItem> _items = [];
+  bool _isInitialized = false;
+
+  CartProvider() {
+    // Load cart data when provider is created
+    loadCart();
+  }
 
   List<CartItem> get items => _items;
 
@@ -113,22 +119,49 @@ class CartProvider with ChangeNotifier {
 
   // Save cart to shared preferences
   Future<void> _saveToPrefs() async {
-    final prefs = await SharedPreferences.getInstance();
-    final cartData = json.encode(
-      _items.map((item) => item.toMap()).toList(),
-    );
-    await prefs.setString('cart', cartData);
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final cartData = json.encode(
+        _items.map((item) => item.toMap()).toList(),
+      );
+      await prefs.setString('cart', cartData);
+      if (kDebugMode) {
+        print('Cart saved to SharedPreferences: $cartData');
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error saving cart to SharedPreferences: $e');
+      }
+    }
   }
 
   // Load cart from shared preferences
   Future<void> loadCart() async {
-    final prefs = await SharedPreferences.getInstance();
-    final cartData = prefs.getString('cart');
+    if (_isInitialized) return;
 
-    if (cartData != null) {
-      final List<dynamic> decodedData = json.decode(cartData);
-      _items = decodedData.map((item) => CartItem.fromMap(item)).toList();
-      notifyListeners();
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final cartData = prefs.getString('cart');
+
+      if (kDebugMode) {
+        print('Loading cart from SharedPreferences: $cartData');
+      }
+
+      if (cartData != null && cartData.isNotEmpty) {
+        final List<dynamic> decodedData = json.decode(cartData);
+        _items = decodedData.map((item) => CartItem.fromMap(item)).toList();
+        notifyListeners();
+      }
+
+      _isInitialized = true;
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error loading cart from SharedPreferences: $e');
+      }
+      _isInitialized = true;
     }
   }
+
+  // For debugging - verify if the cart is properly loaded
+  bool get isLoaded => _isInitialized;
 }
