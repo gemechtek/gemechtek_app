@@ -239,21 +239,18 @@ class _OrdersScreenState extends State<OrdersScreen>
                   padding:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
+                    mainAxisAlignment:
+                        order.status == OrderStatus.outForDelivery
+                            ? MainAxisAlignment.spaceBetween
+                            : MainAxisAlignment.end,
                     children: [
-                      // order.status == OrderStatus.delivered
-                      //     ? const Row(
-                      //         children: [
-                      //           Text('Rate this Product'),
-                      //           SizedBox(width: 8),
-                      //           Icon(Icons.star_border, size: 18),
-                      //           Icon(Icons.star_border, size: 18),
-                      //           Icon(Icons.star_border, size: 18),
-                      //           Icon(Icons.star_border, size: 18),
-                      //           Icon(Icons.star_border, size: 18),
-                      //         ],
-                      //       )
-                      //     : const SizedBox(),
+                      if (order.status == OrderStatus.outForDelivery) ...[
+                        const SizedBox(height: 8),
+                        Text(
+                          'Delivery Code: ${order.deliveryCode ?? 'Not generated'}',
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ],
                       ElevatedButton(
                         onPressed: () {
                           _showTrackingBottomSheet(context, order);

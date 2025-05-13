@@ -199,7 +199,9 @@ class OrderDetails {
   final DateTime updatedAt;
   final List<StatusChange> statusHistory;
   final DateTime? estimatedDeliveryDate;
-
+  final String? deliveryPersonId;
+  final String? deliveryCode;
+  final String? deliveredBy;
   OrderDetails({
     this.id,
     required this.userId,
@@ -217,6 +219,9 @@ class OrderDetails {
     DateTime? updatedAt,
     List<StatusChange>? statusHistory,
     this.estimatedDeliveryDate,
+    this.deliveryPersonId,
+    this.deliveryCode,
+    this.deliveredBy,
   })  : createdAt = createdAt ?? DateTime.now(),
         updatedAt = updatedAt ?? DateTime.now(),
         statusHistory = statusHistory ??
@@ -267,6 +272,9 @@ class OrderDetails {
       'statusHistory': statusHistory.map((change) => change.toMap()).toList(),
       'estimatedDeliveryDate':
           deliveryDate != null ? Timestamp.fromDate(deliveryDate) : null,
+      'deliveryPersonId': deliveryPersonId,
+      'deliveryCode': deliveryCode,
+      'deliveredBy': deliveredBy,
     };
   }
 
@@ -312,6 +320,9 @@ class OrderDetails {
       statusHistory: statusHistory,
       estimatedDeliveryDate:
           (data['estimatedDeliveryDate'] as Timestamp?)?.toDate(),
+      deliveryPersonId: data['deliveryPersonId'],
+      deliveryCode: data['deliveryCode'],
+      deliveredBy: data['deliveredBy'],
     );
   }
 
@@ -357,6 +368,9 @@ class OrderDetails {
     DateTime? updatedAt,
     List<StatusChange>? statusHistory,
     DateTime? estimatedDeliveryDate,
+    String? deliveryPersonId,
+    String? deliveryCode,
+    String? deliveredBy,
   }) {
     return OrderDetails(
       id: id ?? this.id,
@@ -376,6 +390,9 @@ class OrderDetails {
       statusHistory: statusHistory ?? this.statusHistory,
       estimatedDeliveryDate:
           estimatedDeliveryDate ?? this.estimatedDeliveryDate,
+      deliveredBy: deliveredBy ?? this.deliveredBy,
+      deliveryCode: deliveryCode ?? this.deliveryCode,
+      deliveryPersonId: deliveryPersonId ?? this.deliveryPersonId,
     );
   }
 }
