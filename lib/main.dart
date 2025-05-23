@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spark_aquanix/app/app_theme.dart';
 import 'package:spark_aquanix/app/providers.dart';
 import 'package:spark_aquanix/backend/firebase_services/notification_service.dart';
@@ -19,6 +20,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   AppLogger.log('Handling a background message: ${message.messageId}');
 }
 
+late SharedPreferences prefs;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -28,13 +30,11 @@ void main() async {
 
   await auth.FirebaseAuth.instance.setLanguageCode('en-IN');
 
-  // Set up FCM background handler - this is still needed at startup
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-  // Initialize notification service (will add this class later)
   await NotificationService.initialize();
+  prefs = await SharedPreferences.getInstance();
 
-  // Check if user is logged in
   final LocalPreferenceService localPrefs = LocalPreferenceService();
   final bool isLoggedIn = await localPrefs.isLoggedIn();
 
@@ -88,6 +88,11 @@ class _PermissionHandlerState extends State<PermissionHandler> {
       provisional: false,
       sound: true,
     );
+
+    final isGranted =
+        settings.authorizationStatus == AuthorizationStatus.authorized;
+
+    await prefs.setBool('receive_notifications', isGranted);
 
     AppLogger.log('User granted permission: ${settings.authorizationStatus}');
 

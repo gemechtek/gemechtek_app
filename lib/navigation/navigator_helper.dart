@@ -7,6 +7,7 @@ import 'package:spark_aquanix/view/notification/notification_screen.dart';
 import 'package:spark_aquanix/view/products/product_details.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
 import 'package:spark_aquanix/view/profile/screens/edit_profile.dart';
+import 'package:spark_aquanix/view/profile/screens/settings_screen.dart';
 
 import 'main_navigation.dart';
 
@@ -52,6 +53,15 @@ class NavigationHelper {
     pushScreen(
       context,
       screen: NotificationsScreen(),
+      withNavBar: false,
+      pageTransitionAnimation: PageTransitionAnimation.cupertino,
+    );
+  }
+
+  static void navigateToSettingsScreen(BuildContext context) {
+    pushScreen(
+      context,
+      screen: SettingsScreen(),
       withNavBar: false,
       pageTransitionAnimation: PageTransitionAnimation.cupertino,
     );

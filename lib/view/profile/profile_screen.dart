@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:spark_aquanix/backend/providers/auth_provider.dart';
 import 'package:spark_aquanix/navigation/navigator_helper.dart';
-import 'package:spark_aquanix/view/auth/login.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -92,14 +91,15 @@ class ProfileScreen extends StatelessWidget {
               context,
               icon: Icons.notifications_outlined,
               title: 'Notifications',
-              onTap: () {},
+              onTap: () =>
+                  NavigationHelper.navigateToNotificationScreen(context),
             ),
 
             _buildMenuItem(
               context,
               icon: Icons.settings_outlined,
               title: 'Settings',
-              onTap: () {},
+              onTap: () => NavigationHelper.navigateToSettingsScreen(context),
             ),
 
             _buildMenuItem(
