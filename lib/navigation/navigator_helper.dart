@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:spark_aquanix/view/auth/login.dart';
+import 'package:spark_aquanix/view/auth/screen/auth.dart';
 import 'package:spark_aquanix/view/checkout/checkout_screen.dart';
 import 'package:spark_aquanix/view/checkout/widgets/order_placed.dart';
 import 'package:spark_aquanix/view/home/home_screen.dart';
@@ -107,7 +108,7 @@ class NavigationHelper {
   static void navigateToLogin(BuildContext context) {
     pushReplacementWithoutNavBar(
       context,
-      MaterialPageRoute(builder: (_) => const LoginScreen()),
+      MaterialPageRoute(builder: (_) => const AuthScreen()),
     );
   }
 

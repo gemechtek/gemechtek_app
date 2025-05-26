@@ -10,9 +10,9 @@ import 'package:spark_aquanix/constants/app_logs.dart';
 
 import 'package:spark_aquanix/firebase_options.dart';
 import 'package:spark_aquanix/navigation/main_navigation.dart';
-import 'package:spark_aquanix/view/auth/login.dart';
 import 'package:provider/provider.dart';
 import 'package:spark_aquanix/backend/firebase_services/local_pref.dart';
+import 'package:spark_aquanix/view/auth/screen/auth.dart';
 
 // Handle background messages
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -25,6 +25,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp(
+    name: "Spark Aquanix",
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
@@ -107,7 +108,7 @@ class _PermissionHandlerState extends State<PermissionHandler> {
       MaterialPageRoute(
         builder: (context) => widget.isLoggedIn
             ? const MainNavigationScreen()
-            : const LoginScreen(),
+            : const AuthScreen(),
       ),
     );
   }

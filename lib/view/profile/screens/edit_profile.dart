@@ -13,6 +13,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
   bool _isLoading = false;
 
   @override
@@ -24,6 +25,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       if (authProvider.currentUser != null) {
         _nameController.text = authProvider.currentUser!.name;
         _addressController.text = authProvider.currentUser?.address ?? "";
+        _phoneController.text = authProvider.currentUser?.phone ?? "";
       }
     });
   }
@@ -48,6 +50,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     final success = await authProvider.updateUserDetails(
       name: _nameController.text.trim(),
       address: _addressController.text.trim(),
+      phone: _phoneController.text.trim(),
     );
 
     setState(() {
@@ -146,11 +149,24 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         },
                       ),
                       const SizedBox(height: 20),
-
-                      // Phone Field (Disabled)
                       TextFormField(
-                        initialValue: user.phone,
+                        initialValue: user.email,
                         enabled: false,
+                        decoration: InputDecoration(
+                          labelText: 'Email',
+                          prefixIcon: const Icon(Icons.phone_outlined),
+                          disabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide.none,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      // Phone Field
+                      TextFormField(
+                        controller: _phoneController,
+                        // initialValue: user.phone,
+                        enabled: true,
                         decoration: InputDecoration(
                           labelText: 'Phone Number',
                           prefixIcon: const Icon(Icons.phone_outlined),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:spark_aquanix/backend/providers/auth_provider.dart';
+import 'package:spark_aquanix/main.dart';
 import 'package:spark_aquanix/navigation/navigator_helper.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -135,6 +136,7 @@ class ProfileScreen extends StatelessWidget {
 
                 if (shouldLogout == true) {
                   await authProvider.signOut();
+                  prefs.clear();
                   if (context.mounted) {
                     // Navigator.pushAndRemoveUntil(
                     //   context,
