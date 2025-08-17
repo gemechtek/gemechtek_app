@@ -220,7 +220,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   Widget build(BuildContext context) {
     final cartProvider = Provider.of<CartProvider>(context);
     // const double tax = 0.1; // 10% tax rate
-    final double shippingCost = cartProvider.totalAmount > 1999 ? 0 : 50;
+    final double shippingCost = cartProvider.totalAmount > 4999 ? 0 : 60;
     final subtotal = cartProvider.totalAmount;
     final total = subtotal + shippingCost;
 

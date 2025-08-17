@@ -351,13 +351,13 @@ class CartScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text('Shipping'),
-                        Text(cartProvider.totalAmount > 1999
+                        Text(cartProvider.totalAmount > 4999
                             ? 'FREE'
-                            : '₹${50.toStringAsFixed(2)}'),
+                            : '₹${60.toStringAsFixed(2)}'),
                       ],
                     ),
 
-                    if (cartProvider.totalAmount > 1999) ...[
+                    if (cartProvider.totalAmount > 4999) ...[
                       const SizedBox(height: 8),
                       Row(
                         children: const [
@@ -375,7 +375,7 @@ class CartScreen extends StatelessWidget {
                       ),
                     ],
 
-                    if (cartProvider.totalAmount < 1999) ...[
+                    if (cartProvider.totalAmount < 4999) ...[
                       const SizedBox(height: 8),
                       Row(
                         children: [
@@ -383,7 +383,7 @@ class CartScreen extends StatelessWidget {
                               color: Colors.orange, size: 20),
                           const SizedBox(width: 8),
                           Text(
-                            'Add ₹${(1999 - cartProvider.totalAmount).toStringAsFixed(2)} more for free shipping!',
+                            'Add ₹${(4999 - cartProvider.totalAmount).toStringAsFixed(2)} more for free shipping!',
                             style: const TextStyle(
                               color: Colors.orange,
                               fontWeight: FontWeight.w500,
@@ -405,7 +405,7 @@ class CartScreen extends StatelessWidget {
                         ),
                         Text(
                           // '₹${cartProvider.totalAmount.toStringAsFixed(2)}',
-                          '₹${(cartProvider.totalAmount + (cartProvider.totalAmount > 1999 ? 0 : 50)).toStringAsFixed(2)}',
+                          '₹${(cartProvider.totalAmount + (cartProvider.totalAmount > 4999 ? 0 : 60)).toStringAsFixed(2)}',
                           style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,

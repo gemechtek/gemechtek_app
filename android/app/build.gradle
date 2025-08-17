@@ -45,7 +45,8 @@ android {
 
     buildTypes {
         release {
-             minifyEnabled true  // Enable code shrinking
+            signingConfig = signingConfigs.release
+            minifyEnabled true  // Enable code shrinking
             shrinkResources true  // Remove unused resources
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
@@ -54,4 +55,9 @@ android {
 
 flutter {
     source = "../.."
+}
+
+
+dependencies {
+    implementation "com.google.android.gms:play-services-auth:20.7.0"
 }

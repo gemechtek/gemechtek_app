@@ -7,6 +7,108 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:542645939884:android:2fbd9afeedb350690bb909",
+        "android_client_info": {
+          "package_name": "com.example.gemechtek_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "542645939884-32k44d6aa33atpbqc7m18amhm31qdtjt.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.gemechtek_app",
+            "certificate_hash": "556c801c98e3bb4a65ab207acc1d1dc3b4d48103"
+          }
+        },
+        {
+          "client_id": "542645939884-f8biiqi610lvpifpm8r113n9cgu49dig.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBIJRO7FeJhi5liN-rhnR4s79C8kedB0Gw"
+        },
+        {
+          "current_key": "AIzaSyCqLtYMkgRZ-nMXx30-yp4aB91iExcXMik"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "542645939884-f8biiqi610lvpifpm8r113n9cgu49dig.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "542645939884-5d36pht2vh8bejolqa0b2gbd7orgekke.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.sparkaquanix.app"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:542645939884:android:c9f36b72268190f40bb909",
+        "android_client_info": {
+          "package_name": "com.sparkAquanixDelivery.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "542645939884-civ3jvsd9ca08bdsv3ucrcniuhudg6e0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sparkAquanixDelivery.app",
+            "certificate_hash": "356b0f8314481c3e24ab9ff2a22711a4ab26cfa3"
+          }
+        },
+        {
+          "client_id": "542645939884-p9fhf7rdd2fumqkr0s1ac5qfgstrdk9f.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sparkAquanixDelivery.app",
+            "certificate_hash": "556c801c98e3bb4a65ab207acc1d1dc3b4d48103"
+          }
+        },
+        {
+          "client_id": "542645939884-f8biiqi610lvpifpm8r113n9cgu49dig.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBIJRO7FeJhi5liN-rhnR4s79C8kedB0Gw"
+        },
+        {
+          "current_key": "AIzaSyCqLtYMkgRZ-nMXx30-yp4aB91iExcXMik"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "542645939884-f8biiqi610lvpifpm8r113n9cgu49dig.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "542645939884-5d36pht2vh8bejolqa0b2gbd7orgekke.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.sparkaquanix.app"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:542645939884:android:495129d1f7633cb70bb909",
         "android_client_info": {
           "package_name": "com.sparkaquanix.app"
@@ -19,6 +121,14 @@
           "android_info": {
             "package_name": "com.sparkaquanix.app",
             "certificate_hash": "556c801c98e3bb4a65ab207acc1d1dc3b4d48103"
+          }
+        },
+        {
+          "client_id": "542645939884-3fkmfoa36m7o7t9cl64f517omi7k3vba.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sparkaquanix.app",
+            "certificate_hash": "356b0f8314481c3e24ab9ff2a22711a4ab26cfa3"
           }
         },
         {
