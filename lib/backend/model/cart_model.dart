@@ -25,17 +25,20 @@ class CartItem {
   // Total price for this cart item
   double get totalPrice => price * quantity;
 
-  // Create a copy of this cart item with updated quantity
+  // Create a copy of this cart item with updated fields
   CartItem copyWith({
     int? quantity,
+    String? productName,
+    double? price,
+    String? image,
     List<PaymentType>? paymentTypes,
   }) {
     return CartItem(
       productId: productId,
-      productName: productName,
-      price: price,
+      productName: productName ?? this.productName,
+      price: price ?? this.price,
       quantity: quantity ?? this.quantity,
-      image: image,
+      image: image ?? this.image,
       selectedColor: selectedColor,
       size: size,
       paymentTypes: paymentTypes ?? this.paymentTypes,

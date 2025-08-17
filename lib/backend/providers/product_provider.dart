@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spark_aquanix/backend/firebase_services/product_service.dart';
-import 'package:spark_aquanix/backend/model/User_Product.dart';
+import 'package:spark_aquanix/backend/model/user_product.dart';
 
 class ProductProvider with ChangeNotifier {
   final ProductService _productService = ProductService();
@@ -21,6 +22,15 @@ class ProductProvider with ChangeNotifier {
   List<String> get categories => _categories;
   bool get isLoading => _isLoading;
   String get selectedCategory => _selectedCategory;
+
+  List<String> _favoriteProductIds = [];
+  List<String> get favoriteProducts => _favoriteProductIds;
+
+  Future<void> loadFavoriteProducts() async {
+    final prefs = await SharedPreferences.getInstance();
+    _favoriteProductIds = prefs.getStringList('favoriteIds') ?? [];
+    notifyListeners();
+  }
 
   ProductProvider() {
     fetchProducts();

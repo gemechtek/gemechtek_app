@@ -46,6 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
         productProvider.fetchFeaturedProducts();
         productProvider.fetchDiscountedProducts();
         productProvider.fetchCategories();
+        productProvider.loadFavoriteProducts();
       });
     }
   }
@@ -64,6 +65,45 @@ class _HomeScreenState extends State<HomeScreen> {
           title: const Text('Welcome'),
           centerTitle: false,
           actions: [
+            //count no of favorite items
+
+            Consumer<ProductProvider>(
+              builder: (context, productProvider, _) => Stack(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.favorite),
+                    onPressed: () {
+                      NavigationHelper.navigateToFavorites(context);
+                    },
+                  ),
+                  if (productProvider.favoriteProducts.isNotEmpty)
+                    Positioned(
+                      right: 5,
+                      top: 5,
+                      child: Container(
+                        padding: const EdgeInsets.all(2),
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        constraints: const BoxConstraints(
+                          minWidth: 16,
+                          minHeight: 16,
+                        ),
+                        child: Text(
+                          '${productProvider.favoriteProducts.length}',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 10,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+
             Consumer<NotificationProvider>(
               builder: (context, notificationProvider, _) {
                 return NotificationBadge(
@@ -139,16 +179,16 @@ class _HomeScreenState extends State<HomeScreen> {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          TextButton(
-                            onPressed: () {},
-                            child: const Text(
-                              'View All',
-                              style: TextStyle(
-                                decoration: TextDecoration.underline,
-                                color: Colors.blue,
-                              ),
-                            ),
-                          ),
+                          // TextButton(
+                          //   onPressed: () {},
+                          //   child: const Text(
+                          //     'View All',
+                          //     style: TextStyle(
+                          //       decoration: TextDecoration.underline,
+                          //       color: Colors.blue,
+                          //     ),
+                          //   ),
+                          // ),
                         ],
                       ),
                     ],
@@ -172,25 +212,44 @@ class _HomeScreenState extends State<HomeScreen> {
                         physics: const ClampingScrollPhysics(),
                         itemCount: categories.length,
                         itemBuilder: (context, index) {
-                          return Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 8),
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            decoration: BoxDecoration(
-                              color: Colors.grey.shade200,
-                              borderRadius: BorderRadius.circular(12),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.2),
-                                  spreadRadius: 1,
-                                  blurRadius: 5,
-                                  offset: const Offset(0, 3),
+                          final category = categories[index];
+                          final isSelected =
+                              category == productProvider.selectedCategory;
+                          return GestureDetector(
+                            onTap: () {
+                              productProvider.fetchProductsByCategory(
+                                isSelected
+                                    ? ''
+                                    : category, // Clear selection if already selected
+                              );
+                            },
+                            child: Container(
+                              margin: const EdgeInsets.symmetric(horizontal: 8),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 16),
+                              decoration: BoxDecoration(
+                                color: isSelected
+                                    ? Colors.blue
+                                    : Colors.grey.shade200,
+                                borderRadius: BorderRadius.circular(12),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.2),
+                                    spreadRadius: 1,
+                                    blurRadius: 5,
+                                    offset: const Offset(0, 3),
+                                  ),
+                                ],
+                              ),
+                              alignment: Alignment.center,
+                              child: Text(
+                                category,
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color:
+                                      isSelected ? Colors.white : Colors.black,
                                 ),
-                              ],
-                            ),
-                            alignment: Alignment.center,
-                            child: Text(
-                              categories[index],
-                              style: const TextStyle(fontSize: 16),
+                              ),
                             ),
                           );
                         },

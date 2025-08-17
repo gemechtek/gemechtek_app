@@ -183,7 +183,7 @@ class OrderDetailScreen extends StatelessWidget {
                                     style: TextStyle(color: Colors.grey[600]),
                                   ),
                                   Text(
-                                    '\$${item.totalPrice.toStringAsFixed(2)}',
+                                    '₹${item.totalPrice.toStringAsFixed(2)}',
                                     style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -225,7 +225,7 @@ class OrderDetailScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text('Subtotal'),
-                      Text('\$${order.subtotal.toStringAsFixed(2)}'),
+                      Text('₹${order.subtotal.toStringAsFixed(2)}'),
                     ],
                   ),
                   const SizedBox(height: 8),
@@ -233,7 +233,7 @@ class OrderDetailScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text('Tax'),
-                      Text('\$${order.tax.toStringAsFixed(2)}'),
+                      Text('₹${order.tax.toStringAsFixed(2)}'),
                     ],
                   ),
                   const SizedBox(height: 8),
@@ -241,7 +241,7 @@ class OrderDetailScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text('Shipping'),
-                      Text('\$${order.shippingCost.toStringAsFixed(2)}'),
+                      Text('₹${order.shippingCost.toStringAsFixed(2)}'),
                     ],
                   ),
                   const Divider(height: 24),
@@ -253,7 +253,7 @@ class OrderDetailScreen extends StatelessWidget {
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       Text(
-                        '\$${order.total.toStringAsFixed(2)}',
+                        '₹${order.total.toStringAsFixed(2)}',
                         style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ],

@@ -1,10 +1,11 @@
 // screens/product_detail_screen.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:spark_aquanix/backend/model/User_Product.dart';
+import 'package:spark_aquanix/backend/model/user_product.dart';
 import 'package:spark_aquanix/backend/providers/cart_provider.dart';
 import 'package:spark_aquanix/backend/providers/product_provider.dart';
 import 'package:spark_aquanix/constants/enums/product_color.dart';
+import 'package:spark_aquanix/constants/enums/product_status.dart';
 import 'package:spark_aquanix/navigation/navigator_helper.dart';
 import 'package:spark_aquanix/view/cart/cart_screen.dart';
 import 'package:spark_aquanix/view/products/widgets/image_carousel.dart';
@@ -81,6 +82,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               ],
             ),
           ),
+          SizedBox(
+            width: 16,
+          )
         ],
       ),
       body: FutureBuilder<UserProduct?>(
@@ -111,7 +115,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Image Carousel
-                ImageCarousel(images: product.images),
+                InteractiveImageCarousel(images: product.images),
 
                 // Product Info
                 Padding(
@@ -184,69 +188,91 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                             ),
                           ),
                           Text(
-                            product.stock > 0
-                                ? 'In Stock (${product.stock})'
-                                : 'Out of Stock',
+                            product.status.toString(),
                             style: TextStyle(
-                              color:
-                                  product.stock > 0 ? Colors.green : Colors.red,
+                              color: product.status == ProductStatus.outOfStock
+                                  ? Colors.red
+                                  : Colors.green,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      // Stock
+                      Row(
+                        children: [
+                          const Text(
+                            'Warranty: ',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            product.warranty.isNotEmpty
+                                ? product.warranty
+                                : 'No Warranty',
+                            style: TextStyle(
+                              color: product.warranty.isNotEmpty
+                                  ? Colors.green
+                                  : Colors.grey,
                             ),
                           ),
                         ],
                       ),
                       const SizedBox(height: 16),
 
-                      // Colors
-                      if (product.colors.isNotEmpty) ...[
-                        const Text(
-                          'Colors:',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        SizedBox(
-                          height: 50,
-                          child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: product.colors.length,
-                            itemBuilder: (ctx, i) {
-                              final color = product.colors[i];
-                              final isSelected = color == _selectedColor;
+                      // // Colors
+                      // if (product.colors.isNotEmpty) ...[
+                      //   const Text(
+                      //     'Colors:',
+                      //     style: TextStyle(
+                      //       fontSize: 16,
+                      //       fontWeight: FontWeight.bold,
+                      //     ),
+                      //   ),
+                      //   const SizedBox(height: 8),
+                      //   SizedBox(
+                      //     height: 50,
+                      //     child: ListView.builder(
+                      //       scrollDirection: Axis.horizontal,
+                      //       itemCount: product.colors.length,
+                      //       itemBuilder: (ctx, i) {
+                      //         final color = product.colors[i];
+                      //         final isSelected = color == _selectedColor;
 
-                              return GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    _selectedColor = color;
-                                  });
-                                },
-                                child: Container(
-                                  margin: const EdgeInsets.only(right: 8),
-                                  width: 40,
-                                  height: 40,
-                                  decoration: BoxDecoration(
-                                    color: ProductColor.getColorForEnum(color),
-                                    shape: BoxShape.circle,
-                                    border: Border.all(
-                                      color: isSelected
-                                          ? Colors.black
-                                          : Colors.transparent,
-                                      width: 2,
-                                    ),
-                                  ),
-                                  child: isSelected
-                                      ? const Icon(
-                                          Icons.check,
-                                          color: Colors.white,
-                                        )
-                                      : null,
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                      ],
+                      //         return GestureDetector(
+                      //           onTap: () {
+                      //             setState(() {
+                      //               _selectedColor = color;
+                      //             });
+                      //           },
+                      //           child: Container(
+                      //             margin: const EdgeInsets.only(right: 8),
+                      //             width: 40,
+                      //             height: 40,
+                      //             decoration: BoxDecoration(
+                      //               color: ProductColor.getColorForEnum(color),
+                      //               shape: BoxShape.circle,
+                      //               border: Border.all(
+                      //                 color: isSelected
+                      //                     ? Colors.black
+                      //                     : Colors.transparent,
+                      //                 width: 2,
+                      //               ),
+                      //             ),
+                      //             child: isSelected
+                      //                 ? const Icon(
+                      //                     Icons.check,
+                      //                     color: Colors.white,
+                      //                   )
+                      //                 : null,
+                      //           ),
+                      //         );
+                      //       },
+                      //     ),
+                      //   ),
+                      // ],
                       const SizedBox(height: 16),
 
                       // Size

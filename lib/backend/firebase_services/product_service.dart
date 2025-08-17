@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:spark_aquanix/backend/model/User_Product.dart';
+import 'package:spark_aquanix/backend/model/user_product.dart';
 
 class ProductService {
   final CollectionReference _productsCollection;
@@ -12,25 +12,29 @@ class ProductService {
 
   // Get all products (Active and Out Of Stock)
   Stream<List<UserProduct>> getProducts() {
-    return _productsCollection.snapshots().map((snapshot) {
-      return snapshot.docs.map((doc) {
-        return UserProduct.fromFirestore(
-            doc.data() as Map<String, dynamic>, doc.id);
-      }).toList();
-    });
+    return _productsCollection
+        .where('status', whereIn: ['Active', 'Out Of Stock'])
+        .snapshots()
+        .map((snapshot) {
+          return snapshot.docs.map((doc) {
+            return UserProduct.fromFirestore(
+                doc.data() as Map<String, dynamic>, doc.id);
+          }).toList();
+        });
   }
 
   // Get products by category (Active and Out Of Stock)
   Stream<List<UserProduct>> getProductsByCategory(String category) {
     return _productsCollection
         .where('category', isEqualTo: category)
+        .where('status', whereIn: ['Active', 'Out Of Stock'])
         .snapshots()
         .map((snapshot) {
-      return snapshot.docs.map((doc) {
-        return UserProduct.fromFirestore(
-            doc.data() as Map<String, dynamic>, doc.id);
-      }).toList();
-    });
+          return snapshot.docs.map((doc) {
+            return UserProduct.fromFirestore(
+                doc.data() as Map<String, dynamic>, doc.id);
+          }).toList();
+        });
   }
 
   // Get a specific product by ID

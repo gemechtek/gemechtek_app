@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:spark_aquanix/backend/providers/cart_provider.dart';
-import 'package:spark_aquanix/constants/enums/product_color.dart';
 import 'package:spark_aquanix/navigation/navigator_helper.dart';
 
 class CartScreen extends StatelessWidget {
@@ -192,8 +191,8 @@ class CartScreen extends StatelessWidget {
                                   ),
                             title: Text(
                               cartItem.productName,
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.bold),
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.w600, fontSize: 14),
                             ),
                             subtitle: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -204,28 +203,28 @@ class CartScreen extends StatelessWidget {
                                   style: const TextStyle(fontSize: 12),
                                 ),
                                 const SizedBox(height: 2),
-                                Row(
-                                  children: [
-                                    const Text(
-                                      'Color: ',
-                                      style: TextStyle(fontSize: 12),
-                                    ),
-                                    Container(
-                                      width: 16,
-                                      height: 16,
-                                      decoration: BoxDecoration(
-                                        color: ProductColor.getColorForEnum(
-                                          cartItem.selectedColor,
-                                        ),
-                                        border: Border.all(
-                                          color: Colors.grey,
-                                          width: 1,
-                                        ),
-                                        shape: BoxShape.circle,
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                                // Row(
+                                //   children: [
+                                //     const Text(
+                                //       'Color: ',
+                                //       style: TextStyle(fontSize: 12),
+                                //     ),
+                                //     Container(
+                                //       width: 16,
+                                //       height: 16,
+                                //       decoration: BoxDecoration(
+                                //         color: ProductColor.getColorForEnum(
+                                //           cartItem.selectedColor,
+                                //         ),
+                                //         border: Border.all(
+                                //           color: Colors.grey,
+                                //           width: 1,
+                                //         ),
+                                //         shape: BoxShape.circle,
+                                //       ),
+                                //     ),
+                                //   ],
+                                // ),
                               ],
                             ),
                             trailing: SizedBox(
@@ -234,9 +233,10 @@ class CartScreen extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
                                   Text(
-                                    '\$${(cartItem.price * cartItem.quantity).toStringAsFixed(2)}',
+                                    '₹${(cartItem.price * cartItem.quantity).toStringAsFixed(2)}',
                                     style: const TextStyle(
                                       fontWeight: FontWeight.bold,
+                                      fontSize: 14,
                                       color: Colors.blue,
                                     ),
                                   ),
@@ -343,18 +343,55 @@ class CartScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         const Text('Subtotal'),
-                        Text(
-                            '\$${cartProvider.totalAmount.toStringAsFixed(2)}'),
+                        Text('₹${cartProvider.totalAmount.toStringAsFixed(2)}'),
                       ],
                     ),
                     const SizedBox(height: 8),
-                    const Row(
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text('Shipping'),
-                        Text('FREE'),
+                        Text(cartProvider.totalAmount > 1999
+                            ? 'FREE'
+                            : '₹${50.toStringAsFixed(2)}'),
                       ],
                     ),
+
+                    if (cartProvider.totalAmount > 1999) ...[
+                      const SizedBox(height: 8),
+                      Row(
+                        children: const [
+                          Icon(Icons.local_shipping,
+                              color: Colors.green, size: 20),
+                          SizedBox(width: 8),
+                          Text(
+                            'Congratulations! You have free shipping.',
+                            style: TextStyle(
+                              color: Colors.green,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+
+                    if (cartProvider.totalAmount < 1999) ...[
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          const Icon(Icons.local_shipping,
+                              color: Colors.orange, size: 20),
+                          const SizedBox(width: 8),
+                          Text(
+                            'Add ₹${(1999 - cartProvider.totalAmount).toStringAsFixed(2)} more for free shipping!',
+                            style: const TextStyle(
+                              color: Colors.orange,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                     const Divider(height: 16),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -367,7 +404,8 @@ class CartScreen extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          '\$${cartProvider.totalAmount.toStringAsFixed(2)}',
+                          // '₹${cartProvider.totalAmount.toStringAsFixed(2)}',
+                          '₹${(cartProvider.totalAmount + (cartProvider.totalAmount > 1999 ? 0 : 50)).toStringAsFixed(2)}',
                           style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,

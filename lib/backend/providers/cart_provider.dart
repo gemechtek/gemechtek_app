@@ -1,8 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:spark_aquanix/backend/firebase_services/product_service.dart';
 import 'package:spark_aquanix/backend/model/cart_model.dart';
+import 'package:spark_aquanix/backend/model/user_product.dart';
 import 'package:spark_aquanix/constants/enums/payment_type.dart';
 import 'package:spark_aquanix/constants/enums/product_color.dart';
+import 'package:spark_aquanix/constants/enums/product_status.dart';
 import 'dart:convert';
 
 class CartProvider with ChangeNotifier {
@@ -135,7 +138,7 @@ class CartProvider with ChangeNotifier {
     }
   }
 
-  // Load cart from shared preferences
+  // Load cart from shared preferences and update with Firestore data
   Future<void> loadCart() async {
     if (_isInitialized) return;
 
@@ -150,6 +153,10 @@ class CartProvider with ChangeNotifier {
       if (cartData != null && cartData.isNotEmpty) {
         final List<dynamic> decodedData = json.decode(cartData);
         _items = decodedData.map((item) => CartItem.fromMap(item)).toList();
+
+        // Update cart items with latest data from Firestore
+        await _updateCartItemsFromFirestore();
+
         notifyListeners();
       }
 
@@ -160,6 +167,77 @@ class CartProvider with ChangeNotifier {
       }
       _isInitialized = true;
     }
+  }
+
+  // Update cart items with latest data from Firestore
+  Future<void> _updateCartItemsFromFirestore() async {
+    final productService = ProductService();
+    List<CartItem> updatedItems = [];
+    bool hasChanges = false;
+
+    for (var item in _items) {
+      try {
+        final product = await productService.getProductById(item.productId);
+
+        if (product != null) {
+          // Check if product is still available
+          if (product.status == ProductStatus.active && product.stock > 0) {
+            // Update cart item with latest product data
+            final updatedItem = item.copyWith(
+              productName: product.name,
+              price: product.finalPrice,
+              image: product.images.isNotEmpty ? product.images.first : '',
+              paymentTypes: product.paymentTypes,
+            );
+
+            // If the product details have changed, mark that we need to save
+            if (updatedItem.price != item.price ||
+                updatedItem.productName != item.productName ||
+                updatedItem.image != item.image ||
+                !_arePaymentTypesEqual(
+                    updatedItem.paymentTypes, item.paymentTypes)) {
+              hasChanges = true;
+            }
+
+            updatedItems.add(updatedItem);
+          } else {
+            // Product is no longer available
+            hasChanges = true;
+            if (kDebugMode) {
+              print(
+                  'Removing unavailable product from cart: ${item.productId}');
+            }
+          }
+        } else {
+          // Product no longer exists
+          hasChanges = true;
+          if (kDebugMode) {
+            print('Removing non-existent product from cart: ${item.productId}');
+          }
+        }
+      } catch (e) {
+        if (kDebugMode) {
+          print('Error updating cart item ${item.productId}: $e');
+        }
+        // Keep the original item if there's an error
+        updatedItems.add(item);
+      }
+    }
+
+    // Update the cart if there were any changes
+    if (hasChanges) {
+      _items = updatedItems;
+      await _saveToPrefs();
+    }
+  }
+
+  // Helper method to compare payment types lists
+  bool _arePaymentTypesEqual(List<PaymentType> list1, List<PaymentType> list2) {
+    if (list1.length != list2.length) return false;
+    for (int i = 0; i < list1.length; i++) {
+      if (list1[i] != list2[i]) return false;
+    }
+    return true;
   }
 
   // For debugging - verify if the cart is properly loaded

@@ -18,6 +18,7 @@ class UserProduct {
   final List<PaymentType> paymentTypes;
   final ProductStatus status;
   final int itemSold;
+  final String warranty;
 
   UserProduct({
     required this.id,
@@ -34,6 +35,7 @@ class UserProduct {
     required this.paymentTypes,
     required this.status,
     required this.itemSold,
+    required this.warranty,
   });
 
   // Calculate the final price after discount
@@ -50,6 +52,7 @@ class UserProduct {
 
   // Create UserProduct from Firestore document
   factory UserProduct.fromFirestore(Map<String, dynamic> data, String docId) {
+    // print('Creating UserProduct from Firestore data: $data');
     return UserProduct(
       id: docId,
       name: data['name'] ?? '',
@@ -71,6 +74,44 @@ class UserProduct {
           [],
       status: ProductStatus.fromString(data['status'] ?? 'active'),
       itemSold: data['itemSold'] ?? 0,
+      warranty: data['warranty'] ?? '',
+    );
+  }
+
+  // Add this method inside the UserProduct class
+  UserProduct copyWith({
+    String? id,
+    String? name,
+    String? description,
+    double? basePrice,
+    double? discountPercentage,
+    int? stock,
+    List<ProductColor>? colors,
+    String? size,
+    String? category,
+    List<String>? images,
+    String? discountType,
+    List<PaymentType>? paymentTypes,
+    ProductStatus? status,
+    int? itemSold,
+    String? warranty,
+  }) {
+    return UserProduct(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      basePrice: basePrice ?? this.basePrice,
+      discountPercentage: discountPercentage ?? this.discountPercentage,
+      stock: stock ?? this.stock,
+      colors: colors ?? this.colors,
+      size: size ?? this.size,
+      category: category ?? this.category,
+      images: images ?? this.images,
+      discountType: discountType ?? this.discountType,
+      paymentTypes: paymentTypes ?? this.paymentTypes,
+      status: status ?? this.status,
+      itemSold: itemSold ?? this.itemSold,
+      warranty: warranty ?? this.warranty,
     );
   }
 }

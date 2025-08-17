@@ -219,10 +219,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   @override
   Widget build(BuildContext context) {
     final cartProvider = Provider.of<CartProvider>(context);
-    const double tax = 0.1; // 10% tax rate
-    const double shippingCost = 5.0; // Fixed shipping cost
+    // const double tax = 0.1; // 10% tax rate
+    final double shippingCost = cartProvider.totalAmount > 1999 ? 0 : 50;
     final subtotal = cartProvider.totalAmount;
-    final total = subtotal + (subtotal * tax) + shippingCost;
+    final total = subtotal + shippingCost;
 
     return Scaffold(
       appBar: AppBar(
@@ -245,7 +245,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     padding: const EdgeInsets.only(bottom: 12.0),
                     child: Column(
                       children: [
-                        ImageCarousel(images: [item.image]),
+                        InteractiveImageCarousel(images: [item.image]),
                         const SizedBox(height: 8),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -255,13 +255,13 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                               style: const TextStyle(fontSize: 16),
                             ),
                             Text(
-                              '\$${item.totalPrice.toStringAsFixed(2)}',
+                              '₹${item.totalPrice.toStringAsFixed(2)}',
                               style: const TextStyle(fontSize: 16),
                             ),
                           ],
                         ),
                         Text(
-                          'Qty: ${item.quantity} | Size: ${item.size} | Color: ${item.selectedColor}',
+                          'Qty: ${item.quantity} | Size: ${item.size} ',
                           style: const TextStyle(color: Colors.grey),
                         ),
                       ],
@@ -385,23 +385,23 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text('Subtotal'),
-                  Text('\$${subtotal.toStringAsFixed(2)}'),
+                  Text('₹${subtotal.toStringAsFixed(2)}'),
                 ],
               ),
               const SizedBox(height: 8),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text('Tax (10%)'),
-                  Text('\$${(subtotal * tax).toStringAsFixed(2)}'),
-                ],
-              ),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //   children: [
+              //     const Text('Tax (10%)'),
+              //     Text('₹${(subtotal * tax).toStringAsFixed(2)}'),
+              //   ],
+              // ),
               const SizedBox(height: 8),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text('Shipping'),
-                  Text('\$${shippingCost.toStringAsFixed(2)}'),
+                  Text('₹${shippingCost.toStringAsFixed(2)}'),
                 ],
               ),
               const Divider(height: 24),
@@ -413,7 +413,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   Text(
-                    '\$${total.toStringAsFixed(2)}',
+                    '₹${total.toStringAsFixed(2)}',
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ],

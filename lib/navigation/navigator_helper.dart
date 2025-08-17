@@ -3,6 +3,7 @@ import 'package:spark_aquanix/view/auth/login.dart';
 import 'package:spark_aquanix/view/auth/screen/auth.dart';
 import 'package:spark_aquanix/view/checkout/checkout_screen.dart';
 import 'package:spark_aquanix/view/checkout/widgets/order_placed.dart';
+import 'package:spark_aquanix/view/favorites/favorites_screen.dart';
 import 'package:spark_aquanix/view/home/home_screen.dart';
 import 'package:spark_aquanix/view/notification/notification_screen.dart';
 import 'package:spark_aquanix/view/products/product_details.dart';
@@ -116,6 +117,15 @@ class NavigationHelper {
     pushReplacementWithNavBar(
       context,
       MaterialPageRoute(builder: (_) => const MainNavigationScreen()),
+    );
+  }
+
+  static void navigateToFavorites(BuildContext context) {
+    pushScreen(
+      context,
+      screen: const FavoritesScreen(),
+      withNavBar: true,
+      pageTransitionAnimation: PageTransitionAnimation.cupertino,
     );
   }
 }

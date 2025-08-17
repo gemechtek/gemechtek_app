@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:spark_aquanix/backend/model/User_Product.dart';
-import 'package:spark_aquanix/backend/model/product_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:spark_aquanix/backend/model/user_product.dart';
+import 'package:spark_aquanix/main.dart';
 import 'package:spark_aquanix/navigation/navigator_helper.dart';
 
 // Import your Product model
@@ -34,10 +35,16 @@ class _ProductGridState extends State<ProductGrid> {
         final product = widget.products[index];
         return ProductCard(
           product: product,
-          onFavoriteToggle: () {
-            // setState(() {
-            //   product.isFavorite = !product.isFavorite;
-            // });
+          onFavoriteToggle: () async {
+            prefs = await SharedPreferences.getInstance();
+            List<String> favoriteIds = prefs.getStringList('favoriteIds') ?? [];
+            if (favoriteIds.contains(product.id)) {
+              favoriteIds.remove(product.id);
+            } else {
+              favoriteIds.add(product.id);
+            }
+            await prefs.setStringList('favoriteIds', favoriteIds);
+            setState(() {});
           },
         );
       },
@@ -104,15 +111,14 @@ class ProductCard extends StatelessWidget {
                         shape: BoxShape.circle,
                       ),
                       child: Icon(
-                        // product.isFavorite
-                        //     ? Icons.favorite
-                        // :
-                        Icons.favorite_border,
-                        color:
-                            //  product.isFavorite ?
-
-                            //  Colors.red :
-                            Colors.grey,
+                        (prefs.getStringList('favoriteIds') ?? [])
+                                .contains(product.id)
+                            ? Icons.favorite
+                            : Icons.favorite_border,
+                        color: (prefs.getStringList('favoriteIds') ?? [])
+                                .contains(product.id)
+                            ? Colors.red
+                            : Colors.grey,
                         size: 20,
                       ),
                     ),
@@ -141,23 +147,23 @@ class ProductCard extends StatelessWidget {
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                        const Icon(Icons.star, color: Colors.amber, size: 14),
-                        const SizedBox(width: 2),
-                        Text(
-                          // product.rating.toString(),
-                          "4",
-                          style: const TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.amber,
-                          ),
-                        ),
+                        // const Icon(Icons.star, color: Colors.amber, size: 14),
+                        // const SizedBox(width: 2),
+                        // Text(
+                        //   // product.rating.toString(),
+                        //   "4",
+                        //   style: const TextStyle(
+                        //     fontSize: 12,
+                        //     fontWeight: FontWeight.bold,
+                        //     color: Colors.amber,
+                        //   ),
+                        // ),
                       ],
                     ),
                     // Product Price - Always at bottom
                     Spacer(),
                     Text(
-                      '\$ ${product.finalPrice.toStringAsFixed(0)}',
+                      '₹ ${product.finalPrice.toStringAsFixed(0)}',
                       style: const TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,

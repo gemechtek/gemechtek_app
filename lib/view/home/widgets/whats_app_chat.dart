@@ -7,8 +7,8 @@ class WhatsAppButton extends StatelessWidget {
 
   const WhatsAppButton({
     super.key,
-    this.phoneNumber = '918125150264',
-    this.message = 'Hello!...',
+    this.phoneNumber = '916301712615',
+    this.message = 'Hello! Reaching out from Spark Aquanix App.\n Regarding..',
   });
 
   Future<void> openWhatsAppChat() async {

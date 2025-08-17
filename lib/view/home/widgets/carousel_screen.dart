@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class CarouselScreen extends StatefulWidget {
   const CarouselScreen({super.key});
@@ -16,6 +17,24 @@ class _CarouselScreenState extends State<CarouselScreen> {
       backgroundColor: Colors.blue,
       title: 'Connect With us for more Updates',
       buttonText: 'Connect',
+      onPressed: () async {
+        final phoneNumber = '916301712615';
+        final message =
+            'Hello! Reaching out from Spark Aquanix App.\n Regarding..';
+
+        final whatsappUrl = Uri.parse(
+          'whatsapp://send?phone=$phoneNumber&text=${Uri.encodeComponent(message)}',
+        );
+        // final webUrl = Uri.parse(
+        //   'https://api.whatsapp.com/send?phone=$phoneNumber&text=${Uri.encodeComponent(message)}',
+        // );
+
+        try {
+          await launchUrl(whatsappUrl);
+        } catch (e) {
+          debugPrint('Error launching WhatsApp: $e');
+        }
+      },
       // Replace with your image path
       backgroundImage: 'assets/images/whatsapp_carousel.png',
     ),
@@ -107,10 +126,11 @@ class _CarouselScreenState extends State<CarouselScreen> {
 
 class CarouselSlide extends StatelessWidget {
   final CarouselItem item;
-
+  final VoidCallback? onPressed;
   const CarouselSlide({
     super.key,
     required this.item,
+    this.onPressed,
   });
 
   @override
@@ -145,7 +165,7 @@ class CarouselSlide extends StatelessWidget {
           ),
           const SizedBox(height: 14),
           ElevatedButton(
-            onPressed: () {},
+            onPressed: item.onPressed,
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.white,
               foregroundColor: Colors.blue,
@@ -176,11 +196,13 @@ class CarouselItem {
   final String title;
   final String buttonText;
   final String backgroundImage;
+  final VoidCallback? onPressed;
 
   CarouselItem({
     required this.backgroundColor,
     required this.title,
     required this.buttonText,
     required this.backgroundImage,
+    this.onPressed,
   });
 }
